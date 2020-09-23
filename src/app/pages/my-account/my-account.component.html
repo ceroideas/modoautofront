@@ -1,0 +1,461 @@
+<app-header></app-header>
+
+<div class="main-wrapper">
+	
+	<div class="container">
+		
+		<div class="row">
+			<div class="col-md-3">
+				<img src="assets/logo.png" [routerLink]="['/']" class="main-logo" alt="">
+
+				<br>
+
+				<img *ngIf="banner" (click)="api.openLink(banner.link)" [src]="banner.file" style="width: 100%; cursor: pointer;" alt="">
+			</div>
+			<div class="col-md-9">
+				<h2>Mi cuenta</h2>
+
+				<div class="card">
+					<div class="card-header">
+						<label class="profile-pic" [ngStyle]="{'background-image':'url('+user.avatar+')'}">
+						  <input #imageInput
+						         type="file"
+						         accept="image/*"
+						         (change)="processFile(imageInput)" style="opacity: 0">
+						</label>
+						<div class="userName">{{user.name+' '+user.last_name}}</div>
+					</div>
+					<div class="card-body">
+						<div class="row" style="margin-top: 20px;">
+							<div class="col-sm-4">
+								<h3 style="font-weight: bold; margin-bottom: 0">Correo electrónico</h3>
+								{{user.email}}
+							</div>
+							<div class="col-sm-4">
+								<h3 style="font-weight: bold; margin-bottom: 0">Número de teléfono</h3>
+								{{user.phone || '--'}}
+							</div>
+							<div class="col-sm-4">
+								<h3 style="font-weight: bold; margin-bottom: 0">Tipo de usuario</h3>
+								{{user.role == 3 ? 'Profesional' : 'Normal'}}
+							</div>
+
+							<div class="col-sm-4 offset-md-4 mt-30">
+								<button class="btn btn-block btn-info" data-toggle="modal" data-target="#edit-profile"><i class="fa fa-pencil"></i> Editar mis datos</button>
+							</div>
+						</div>
+
+					</div>
+				</div>
+
+				<br>
+
+				<div *ngIf="user?.company">
+					
+					<h2>Perfil profesional</h2>
+
+					<div class="card">
+						<div class="card-body">
+							<div class="row" style="margin-top: 20px;">
+								<div class="col-sm-4" style="margin-bottom: 20px;">
+									<h3 style="font-weight: bold; margin-bottom: 0">Nombre</h3>
+									{{user?.name || '--'}}
+								</div>
+								<div class="col-sm-4" style="margin-bottom: 20px;">
+									<h3 style="font-weight: bold; margin-bottom: 0">Apellido</h3>
+									{{user?.last_name || '--'}}
+								</div>
+								<div class="col-sm-4" style="margin-bottom: 20px;">
+									<h3 style="font-weight: bold; margin-bottom: 0">Número de teléfono</h3>
+									{{user?.phone || '--'}}
+								</div>
+								<div class="col-sm-4" style="margin-bottom: 20px;">
+									<h3 style="font-weight: bold; margin-bottom: 0">Nombre de la empresa</h3>
+									{{user.company?.title || '--'}}
+								</div>
+								<div class="col-sm-4" style="margin-bottom: 20px;">
+									<h3 style="font-weight: bold; margin-bottom: 0">Sitio web</h3>
+									{{user.company?.web || '--'}}
+								</div>
+								<div class="col-sm-4" style="margin-bottom: 20px;">
+									<h3 style="font-weight: bold; margin-bottom: 0">Stock de vehiculos</h3>
+									{{user?.stock || '--'}}
+								</div>
+								<div class="col-sm-8">
+									<div class="row">
+										<div class="col-sm-12" style="margin-bottom: 20px;">
+											<h3 style="font-weight: bold; margin-bottom: 0">Dirección</h3>
+											{{user.company?.address || '--'}}
+										</div>
+										<hr>
+										<div class="col-sm-12">
+											<h3 style="font-weight: bold; margin-bottom: 0">Descripción</h3>
+											<p [innerHtml]="user.company?.description || '--'"></p>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-sm-4">
+									<h3 style="font-weight: bold; margin-bottom: 0">Logo de la empresa</h3>
+									<label class="profile-pic" [ngStyle]="{'background-image':'url('+logo+')','margin':'auto'}">
+									  <input #ILogo2
+									         type="file"
+									         accept="image/*"
+									         (change)="processFile2(ILogo2)" style="opacity: 0">
+									</label>
+									<br>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="edit-profile" style="z-index: 9999">
+  <div [ngClass]="user.role == 2 ? 'modal-dialog' : 'modal-dialog modal-lg'" role="document">
+    <div class="modal-content">
+      <ngx-loading [show]="modalLoading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
+      <div class="modal-header">
+        <h5 class="modal-title" id="title-header">Modifica tus datos</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="text-align: left;">
+
+      	<form class="form" [formGroup]="validations_form" (ngSubmit)="updateUser(validations_form.value)" *ngIf="user.role == 2">
+
+      		<div class="form-group">
+	        	<label>E-mail</label>
+	        	<div class="input-group mb-3">
+				  <div class="input-group-prepend">
+				    <span class="input-group-text"><i class="fa fa-user"></i></span>
+				  </div>
+				  <input type="text" formControlName="email" class="form-control" placeholder="E-mail *" aria-label="E-mail">
+				</div>
+				<div class="validation-errors">
+		          <ng-container *ngFor="let validation of validation_messages.email">
+		            <div class="error-message" *ngIf="validations_form.get('email').hasError(validation.type) && (validations_form.get('email').dirty || validations_form.get('email').touched)">
+		              {{ validation.message }}
+		            </div>
+		          </ng-container>
+		        </div>
+	        </div>
+
+	      	<div class="form-group">
+	        	<label>Nombre</label>
+	        	<div class="input-group mb-3">
+				  <div class="input-group-prepend">
+				    <span class="input-group-text"><i class="fa fa-user"></i></span>
+				  </div>
+				  <input type="text" formControlName="name" class="form-control" placeholder="Nombre *" aria-label="Nombre">
+				</div>
+				<div class="validation-errors">
+		          <ng-container *ngFor="let validation of validation_messages.name">
+		            <div class="error-message" *ngIf="validations_form.get('name').hasError(validation.type) && (validations_form.get('name').dirty || validations_form.get('name').touched)">
+		              {{ validation.message }}
+		            </div>
+		          </ng-container>
+		        </div>
+	        </div>
+
+	        <div class="form-group">
+	        	<label>Apellido</label>
+	        	<div class="input-group mb-3">
+				  <div class="input-group-prepend">
+				    <span class="input-group-text"><i class="fa fa-user"></i></span>
+				  </div>
+				  <input type="text" formControlName="last_name" class="form-control" placeholder="Apellido *" aria-label="Apellido">
+				</div>
+				<div class="validation-errors">
+		          <ng-container *ngFor="let validation of validation_messages.last_name">
+		            <div class="error-message" *ngIf="validations_form.get('last_name').hasError(validation.type) && (validations_form.get('last_name').dirty || validations_form.get('last_name').touched)">
+		              {{ validation.message }}
+		            </div>
+		          </ng-container>
+		        </div>
+	        </div>
+
+	        <hr>
+
+	        <div class="form-group">
+	        	<label>Teléfono</label>
+	        	<div class="input-group mb-3">
+				  <div class="input-group-prepend">
+				    <span class="input-group-text"><i class="fa fa-phone"></i></span>
+				  </div>
+				  <input type="phone" formControlName="phone" class="form-control" placeholder="Teléfono *" aria-label="Teléfono">
+				</div>
+				<div class="validation-errors">
+		          <ng-container *ngFor="let validation of validation_messages.phone">
+		            <div class="error-message" *ngIf="validations_form.get('phone').hasError(validation.type) && (validations_form.get('phone').dirty || validations_form.get('phone').touched)">
+		              {{ validation.message }}
+		            </div>
+		          </ng-container>
+		        </div>
+	        </div>
+
+	        <hr>
+
+	        <div class="form-group">
+	        	<label>Contraseña</label>
+	        	<div class="input-group mb-3">
+				  <div class="input-group-prepend">
+				    <span class="input-group-text"><i class="fa fa-lock"></i></span>
+				  </div>
+				  <input type="password" formControlName="password" class="form-control" placeholder="Contraseña *" aria-label="Contraseña">
+				</div>
+				<div class="validation-errors">
+		          <ng-container *ngFor="let validation of validation_messages.password">
+		            <div class="error-message" *ngIf="validations_form.get('password').hasError(validation.type) && (validations_form.get('password').dirty || validations_form.get('password').touched)">
+		              {{ validation.message }}
+		            </div>
+		          </ng-container>
+		        </div>
+	        </div>
+
+	      	<hr>
+
+	      	<button type="submit" class="btn btn-block btn-info">Guardar datos</button>
+	    </form>
+
+		<form class="form" [formGroup]="validations_form2" (ngSubmit)="updateProfesional(validations_form2.value)" *ngIf="user.role == 3">
+
+			<div class="row">
+				<div class="col-sm-12">
+			      	<div class="form-group">
+			        	<label>E-mail</label>
+			        	<div class="input-group mb-3">
+						  <div class="input-group-prepend">
+						    <span class="input-group-text"><i class="fa fa-user"></i></span>
+						  </div>
+						  <input type="text" formControlName="email" class="form-control" placeholder="E-mail *" aria-label="E-mail">
+						</div>
+						<div class="validation-errors">
+				          <ng-container *ngFor="let validation of validation_messages2.email">
+				            <div class="error-message" *ngIf="validations_form2.get('email').hasError(validation.type) && (validations_form2.get('email').dirty || validations_form2.get('email').touched)">
+				              {{ validation.message }}
+				            </div>
+				          </ng-container>
+				        </div>
+			        </div>
+			    </div>
+
+				<div class="col-sm-6">
+			      	<div class="form-group">
+			        	<label>Nombre</label>
+			        	<div class="input-group mb-3">
+						  <div class="input-group-prepend">
+						    <span class="input-group-text"><i class="fa fa-user"></i></span>
+						  </div>
+						  <input type="text" formControlName="name" class="form-control" placeholder="Nombre *" aria-label="Nombre">
+						</div>
+						<div class="validation-errors">
+				          <ng-container *ngFor="let validation of validation_messages2.name">
+				            <div class="error-message" *ngIf="validations_form2.get('name').hasError(validation.type) && (validations_form2.get('name').dirty || validations_form2.get('name').touched)">
+				              {{ validation.message }}
+				            </div>
+				          </ng-container>
+				        </div>
+			        </div>
+			    </div>
+
+			    <div class="col-sm-6">
+			        <div class="form-group">
+			        	<label>Apellido</label>
+			        	<div class="input-group mb-3">
+						  <div class="input-group-prepend">
+						    <span class="input-group-text"><i class="fa fa-user"></i></span>
+						  </div>
+						  <input type="text" formControlName="last_name" class="form-control" placeholder="Apellido *" aria-label="Apellido">
+						</div>
+						<div class="validation-errors">
+				          <ng-container *ngFor="let validation of validation_messages2.last_name">
+				            <div class="error-message" *ngIf="validations_form2.get('last_name').hasError(validation.type) && (validations_form2.get('last_name').dirty || validations_form2.get('last_name').touched)">
+				              {{ validation.message }}
+				            </div>
+				          </ng-container>
+				        </div>
+			        </div>
+			    </div>
+
+			    <div class="col-sm-6">
+			        <div class="form-group">
+			        	<label>Teléfono</label>
+			        	<div class="input-group mb-3">
+						  <div class="input-group-prepend">
+						    <span class="input-group-text"><i class="fa fa-phone"></i></span>
+						  </div>
+						  <input type="phone" formControlName="phone" class="form-control" placeholder="Teléfono *" aria-label="Teléfono">
+						</div>
+						<div class="validation-errors">
+				          <ng-container *ngFor="let validation of validation_messages2.phone">
+				            <div class="error-message" *ngIf="validations_form2.get('phone').hasError(validation.type) && (validations_form2.get('phone').dirty || validations_form2.get('phone').touched)">
+				              {{ validation.message }}
+				            </div>
+				          </ng-container>
+				        </div>
+			        </div>
+			    </div>
+
+			    <div class="col-sm-6">
+			        <div class="form-group">
+			        	<label>Contraseña</label>
+			        	<div class="input-group mb-3">
+						  <div class="input-group-prepend">
+						    <span class="input-group-text"><i class="fa fa-lock"></i></span>
+						  </div>
+						  <input type="password" formControlName="password" class="form-control" placeholder="Contraseña *" aria-label="Contraseña">
+						</div>
+						<div class="validation-errors">
+				          <ng-container *ngFor="let validation of validation_messages2.password">
+				            <div class="error-message" *ngIf="validations_form2.get('password').hasError(validation.type) && (validations_form2.get('password').dirty || validations_form2.get('password').touched)">
+				              {{ validation.message }}
+				            </div>
+				          </ng-container>
+				        </div>
+			        </div>
+			    </div>
+			</div>
+
+
+	      	<hr>
+
+	      	<div class="row">
+	      		<div class="col-sm-6">
+	      			<div class="form-group">
+			        	<label>Nombre de la empresa</label>
+			        	<div class="input-group mb-3">
+						  <div class="input-group-prepend">
+						    <span class="input-group-text"><i class="fa fa-industry"></i></span>
+						  </div>
+						  <input type="text" formControlName="title" class="form-control" placeholder="Nombre de la empresa *" aria-label="Nombre de la empresa">
+						</div>
+						<div class="validation-errors">
+				          <ng-container *ngFor="let validation of validation_messages2.title">
+				            <div class="error-message" *ngIf="validations_form2.get('title').hasError(validation.type) && (validations_form2.get('title').dirty || validations_form2.get('title').touched)">
+				              {{ validation.message }}
+				            </div>
+				          </ng-container>
+				        </div>
+			        </div>
+
+			        <div class="form-group">
+			        	<label>Website</label>
+			        	<div class="input-group mb-3">
+						  <div class="input-group-prepend">
+						    <span class="input-group-text"><i class="fa fa-window-maximize"></i></span>
+						  </div>
+						  <input type="text" formControlName="web" class="form-control" placeholder="Website *" aria-label="Nombre">
+						</div>
+						<div class="validation-errors">
+				          <ng-container *ngFor="let validation of validation_messages2.web">
+				            <div class="error-message" *ngIf="validations_form2.get('web').hasError(validation.type) && (validations_form2.get('web').dirty || validations_form2.get('web').touched)">
+				              {{ validation.message }}
+				            </div>
+				          </ng-container>
+				        </div>
+			        </div>
+	      		</div>
+
+	      		<div class="col-sm-6">
+	      			<div class="form-group">
+			        	<label>Descripción</label>
+			        	<div class="input-group mb-3">
+						  <div class="input-group-prepend">
+						    <span class="input-group-text"><i class="fa fa-list-alt"></i></span>
+						  </div>
+						  <textarea style="height: 120px;" formControlName="description" class="form-control" placeholder="Descripción *" aria-label="Descripción"></textarea>
+						</div>
+						<div class="validation-errors">
+				          <ng-container *ngFor="let validation of validation_messages2.description">
+				            <div class="error-message" *ngIf="validations_form2.get('description').hasError(validation.type) && (validations_form2.get('description').dirty || validations_form2.get('description').touched)">
+				              {{ validation.message }}
+				            </div>
+				          </ng-container>
+				        </div>
+			        </div>
+	      		</div>
+
+	      		<div class="col-sm-6">
+	      			<div class="form-group">
+			        	<label>Stock de vehículos</label>
+			        	<div class="mb-3">
+						  <label><input type="radio" formControlName="stock" value="1-20"> 1-20 </label> <br>
+						  <label><input type="radio" formControlName="stock" value="20-50"> 20-50 </label> <br>
+						  <label><input type="radio" formControlName="stock" value="50+"> 50+ </label> <br>
+						</div>
+						<div class="validation-errors">
+				          <ng-container *ngFor="let validation of validation_messages2.stock">
+				            <div class="error-message" *ngIf="validations_form2.get('stock').hasError(validation.type) && (validations_form2.get('stock').dirty || validations_form2.get('stock').touched)">
+				              {{ validation.message }}
+				            </div>
+				          </ng-container>
+				        </div>
+			        </div>
+	      		</div>
+
+	      		<div class="col-sm-6">
+	      			<div class="form-group">
+			        	<label>Logo de la empresa</label>
+			        	<div class="mb-3">
+						  <label class="profile-pic" [ngStyle]="{'background-image':'url('+logo+')'}">
+							<input #ILogo
+							        type="file"
+							        accept="image/*"
+							        (change)="processFile1(ILogo)" style="opacity: 0">
+						  </label>
+				        </div>
+			        </div>
+	      		</div>
+
+	      		<div class="col-sm-12">
+	      			<div class="form-group">
+			        	<label>Dirección</label>
+			        	<div class="input-group mb-3">
+						  <div class="input-group-prepend">
+						    <span class="input-group-text"><i class="fa fa-map-o"></i></span>
+						  </div>
+						  <input type="text" formControlName="address" id="autocomplete" class="form-control" placeholder="Dirección *" aria-label="Dirección">
+						</div>
+						<div class="validation-errors">
+				          <ng-container *ngFor="let validation of validation_messages2.address">
+				            <div class="error-message" *ngIf="validations_form2.get('address').hasError(validation.type) && (validations_form2.get('address').dirty || validations_form2.get('address').touched)">
+				              {{ validation.message }}
+				            </div>
+				          </ng-container>
+				        </div>
+			        </div>
+
+			        <div id="map" style="width: 100%; height: 300px;">
+			        	
+			        </div>
+
+			        <br>
+
+			        <div style="display: none;">
+				        <div id="infowindow-content">
+	                        <img src="" width="16" height="16" id="place-icon">
+	                        <span id="place-name"  class="title"></span><br>
+	                        <span id="place-address"></span>
+	                    </div>
+			        </div>
+	      		</div>
+	      	</div>
+
+	      	<button type="submit" class="btn btn-block btn-info">Guardar datos</button>
+	    </form>
+
+      </div>
+	</div>
+  </div>
+</div>
+
+<app-footer></app-footer>

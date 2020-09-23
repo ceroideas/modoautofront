@@ -1,0 +1,85 @@
+<app-header></app-header>
+
+<div class="main-wrapper">
+	
+	<div class="container">
+
+		<div class="row">
+			<div class="col-md-9">
+
+				<div class="row">
+					
+					<div class="col-md-12" style="height: 60px;">
+						<div class="row">
+							<div class="col-sm-5">
+								<input type="text" class="form-control" [(ngModel)]="words" (keyup)="checkEmpty($event)" placeholder="Buscar profesional" style="height: 32px;">
+							</div>
+							<div class="col-sm-5">
+								<select2 class="custom-select2" [data]="provinces"
+									placeholder="¿Dónde quiere buscar?"
+									value=""
+									displaySearchStatus="always"
+									multiple_
+									[(ngModel)]="province">
+								</select2>
+							</div>
+							<div class="col-sm-2">
+								<button class="btn btn-xs btn-info btn-block" style="padding: 3px;" (click)="search()"><i class="fa fa-search"></i> Buscar</button>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6">
+
+						<div *ngFor="let p of professionals">
+							
+							<div class="professional-box" >
+								<div class="p-header">
+									{{p.company.title}}
+								</div>
+								<div class="p-body">
+									
+								<b>Nombre de contacto: </b> {{p.name}} {{p.last_name}} <br>
+								{{p.company.address}}
+								<div class="profile-circle" [ngStyle]="{'background-image':'url('+p.avatar+')','top':'-20px','position':'relative'}"></div> <br>
+
+								</div>
+								<div class="p-footer">
+								<span (click)="placeMarker(p)"><i class="fa fa-map-marker"></i> Ver ubicación</span>
+								| 
+
+								<div class="dropdown" style="display: inline-block;">
+								  <button class="btn btn-outline-dark btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								    Categorías
+								  </button>
+								  <div class="dropdown-menu">
+								    <a class="dropdown-item" [routerLink]="['/profesionales/'+p.id+'/Coches']">Coches</a>
+								    <a class="dropdown-item" [routerLink]="['/profesionales/'+p.id+'/Repuestos']">Repuestos</a>
+								  </div>
+								</div>
+
+								</div>
+							</div>
+
+						</div>
+					</div>
+				
+
+					<div class="col-md-6">
+						<div id="map">
+							
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="col-md-3">
+				<img src="assets/banner1.jpg" style="width: 100%;" alt="">
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+<app-footer></app-footer>

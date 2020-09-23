@@ -1,0 +1,146 @@
+<div class="row">
+    <div class="col-sm-3" *ngIf="perfil">
+      <div class="card bs-mh mb-20">
+        <div class="card-body card-detail">
+          <span><img src="assets/perfil/star.svg" alt="" class="svg-profile"> Destacar <br></span>
+          <span><img src="assets/perfil/refresh.svg" alt="" class="svg-profile"> Renovar <br></span>
+          <span><img src="assets/perfil/analytics.svg" alt="" class="svg-profile"> Estadísticas <br></span>
+          <span><img src="assets/perfil/share-2.svg" alt="" class="svg-profile"> Compartir <br></span>
+          <span><img src="assets/perfil/print.svg" alt="" class="svg-profile"> Imprimir anuncio <br></span>
+          <span><img src="assets/perfil/trash.svg" alt="" class="svg-profile"> Borrar <br></span>
+        </div>
+      </div>
+    </div>
+    <!-- //**// -->
+    <div [ngClass]="perfil ? 'col-sm-9' : 'col-sm-12'">
+
+      <div class="media publishing">
+        <div class="publishing-img" [ngStyle]="{'background-image':'url(assets/ind/ind1.jpg)'}">
+      	<div class="category-dot">
+      		<img src="assets/iconos/car.svg" alt="">
+      	</div>
+        	<div class="publishing-inner">
+        		<div class="w100">
+      	  		<div class="share">
+      	  			<i class="fa fa-share"></i>
+      	  		</div>
+
+      	  		<div>
+      		  		<i class="fa fa-eye"></i> 10 234 &nbsp;&nbsp;&nbsp;
+      		  		<i class="fa fa-heart-o"></i> 253
+      	  		</div>
+
+      	  		<button class="btn see-in-map"><i class="fa fa-map-marker"></i> Ver en el mapa</button>
+        		</div>
+        	</div>
+        </div>
+        <div class="media-body" [routerLink]="['/industriales/1']">
+          <h2 class="mt-0" style="margin-bottom: 8px">INDUSTRIAL 1 WAYMO <i class="fa fa-heart-o pull-right"></i></h2>
+           
+          <div class="row" style="margin-bottom: -20px;">
+          	<div class="col-3">
+          		<h3 class="mb-0"><b style="font-size: 120%;">23.000€</b> <br> <small style="position: relative; top: -8px;">Al contado</small></h3>
+          		<!-- <h3 class="mb-0" style="position: relative; top: -10px;"><s><b style="font-size: 120%;">25.000€</b></s> <br> <small style="position: relative; top: -8px;">Precio anterior</small></h3> -->
+          	</div>
+          	<div class="col-4">
+          		<h3 class="mb-0"><b style="font-size: 120%; color: crimson;">28.000€</b> <br> <small style="position: relative; top: -8px;">Financiado</small></h3>
+          		<h3 class="mb-0" style="position: relative; top: -10px; line-height: 22px;">
+                <i style="color: #249827;" class="fa fa-check"></i> <b style="font-size: 10px;">GARANTIA: 1 año</b> <br>
+                <i style="color: #249827;" class="fa fa-check"></i> <b style="font-size: 10px;">IVA DEDUCIBLE INC.</b></h3>
+          	</div>
+          	<div class="col-5">
+          		<div class="row" style="font-size: 12px; line-height: 19px">
+          			<div class="col-6" style="padding:0">
+          				Kilometros: <br>
+          				Año: <br>
+          				Potencia/Motor: <br>
+          				Combustible: <br>
+          				<!-- Caja de cambios: <br> -->
+          			</div>
+          			<div class="col-6" style="padding:0">
+          				<b>20.000 Km</b> <br>
+          				<b>2013</b> <br>
+          				<b>52/507cv</b> <br>
+          				<b>Gasolina</b> <br>
+          				<!-- <b>Manual</b> <br> -->
+          			</div>
+          		</div>
+          	</div>
+          </div>
+
+          <hr style="border-width: 1px; border-color: #e9e9e9; box-shadow: 0 0 10px 1px #91aeae; ">
+      	
+      	<i class="fa fa-map-marker"></i> Málaga
+
+      	<button class="btn btn-sm btn-publishing btn-success">Profesional</button>
+      	<button *ngIf="!perfil" class="btn btn-sm btn-publishing btn-outline-secondary">Ver mas vehiculos del profesional</button>
+        <button *ngIf="perfil" class="btn btn-sm btn-publishing btn-info">EDITAR ANUNCIO</button>
+        </div>
+      </div>
+
+      <div *ngIf="!perfil">
+        <div class="media publishing featured">
+          <div class="publishing-img" [ngStyle]="{'background-image':'url(assets/ind/ind2.jpg)'}">
+        	<div class="category-dot">
+        		<img src="assets/iconos/car.svg" alt="">
+        	</div>
+          	<div class="publishing-inner">
+          		<div class="w100">
+        	  		<div class="share">
+        	  			<i class="fa fa-share"></i>
+        	  		</div>
+
+        	  		<div>
+        		  		<i class="fa fa-eye"></i> 10 234 &nbsp;&nbsp;&nbsp;
+        		  		<i class="fa fa-heart-o"></i> 253
+        	  		</div>
+
+        	  		<button class="btn see-in-map"><i class="fa fa-map-marker"></i> Ver en el mapa</button>
+          		</div>
+          	</div>
+          </div>
+          <div class="media-body" [routerLink]="['/industriales/1']">
+            <h2 class="mt-0" style="margin-bottom: 8px">INDUSTRIAL 2 MERCEDES <i class="fa fa-heart-o pull-right"></i></h2>
+             
+            <div class="row" style="margin-bottom: -20px;">
+            	<div class="col-3">
+            		<h3 class="mb-0"><b style="font-size: 120%;">23.000€</b> <br> <small style="position: relative; top: -8px;">Al contado</small></h3>
+            		<!-- <h3 class="mb-0" style="position: relative; top: -10px;"><s><b style="font-size: 120%;">25.000€</b></s> <br> <small style="position: relative; top: -8px;">Precio anterior</small></h3> -->
+            	</div>
+            	<div class="col-4">
+            		<h3 class="mb-0"><b style="font-size: 120%; color: crimson;">28.000€</b> <br> <small style="position: relative; top: -8px;">Financiado</small></h3>
+            		<h3 class="mb-0" style="position: relative; top: -10px; line-height: 22px;">
+                  <i style="color: #249827;" class="fa fa-check"></i> <b style="font-size: 10px;">GARANTIA: 1 año</b> <br>
+                  <i style="color: #249827;" class="fa fa-check"></i> <b style="font-size: 10px;">IVA DEDUCIBLE INC.</b></h3>
+            	</div>
+            	<div class="col-5">
+            		<div class="row" style="font-size: 12px; line-height: 19px">
+            			<div class="col-6" style="padding:0">
+            				Kilometros: <br>
+            				Año: <br>
+            				Potencia/Motor: <br>
+            				Combustible: <br>
+            				<!-- Caja de cambios: <br> -->
+            			</div>
+            			<div class="col-6" style="padding:0">
+            				<b>20.000 Km</b> <br>
+            				<b>2013</b> <br>
+            				<b>52/507cv</b> <br>
+            				<b>Gasolina</b> <br>
+            				<!-- <b>Manual</b> <br> -->
+            			</div>
+            		</div>
+            	</div>
+            </div>
+
+            <hr style="border-width: 1px; border-color: #e9e9e9; box-shadow: 0 0 10px 1px #91aeae; ">
+        	
+        	<i class="fa fa-map-marker"></i> Málaga
+
+        	<button class="btn btn-sm btn-publishing btn-success">Profesional</button>
+        	<button class="btn btn-sm btn-publishing btn-outline-secondary">Ver mas vehiculos del profesional</button>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>

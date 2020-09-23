@@ -1,0 +1,294 @@
+<div *ngIf="!loading">
+  
+  <div class="row" *ngFor="let v of data">
+    <div class="col-sm-3" *ngIf="perfil">
+      <div class="card bs-mh mb-20">
+        <div class="card-body card-detail">
+          <div *ngIf="v.featured == 0">
+          <span data-toggle="modal" [attr.data-target]="'#feature-'+v.id"><img src="assets/perfil/star.svg" alt="" class="svg-profile"> Destacar <br></span>
+          </div>
+
+          <div *ngIf="v.featured == 1">
+            <span><img src="assets/perfil/star.svg" alt="" class="svg-profile"> <span style="color: crimson;">Destacado</span> <br></span>
+          </div>
+
+          <span data-toggle="modal" [attr.data-target]="'#renovar'+v.id" *ngIf="!v.valid_until | isvalid"><img src="assets/perfil/refresh.svg" alt="" class="svg-profile"> Renovar <br></span>
+          
+          <span *ngIf="(v?.valid_until | isvalid) && v?.activated_at" (click)="activo()"><img src="assets/perfil/tick.svg" alt="" class="svg-profile"> Activo <br></span>
+
+          <span *ngIf="!v?.activated_at" (click)="inactivo()"><img src="assets/perfil/block.svg" alt="" class="svg-profile"> Inactivo <br></span>
+
+          <span><img src="assets/perfil/analytics.svg" alt="" class="svg-profile"> Estadísticas <br></span>
+          <span (click)="imprimir(v.id)"><img src="assets/perfil/print.svg" alt="" class="svg-profile"> Imprimir anuncio <br></span>
+          <span data-toggle="modal" [attr.data-target]="'#delete'+v.id"><img src="assets/perfil/trash.svg" alt="" class="svg-profile"> Borrar <br></span>
+          <span class="share-box"><img src="assets/perfil/share-2.svg" alt="" class="svg-profile"> Compartir <br>
+            <div class="share-panel">
+              <share-button button="facebook" [url]="api.baseUrl+'detalles/'+v.id"></share-button>
+              <share-button button="twitter" [url]="api.baseUrl+'detalles/'+v.id"></share-button>
+              <share-button button="whatsapp" [url]="api.baseUrl+'detalles/'+v.id"></share-button>
+            </div>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" [id]="'delete'+v.id">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            ¿Borrar el anuncio seleccionado? - {{v.title}}
+          </div>
+          <div class="modal-footer">
+            <button data-dismiss="modal" class="btn btn-sm btn-success" (click)="deleteAdvert(v.id)">Borrar</button>
+            <button data-dismiss="modal" class="btn btn-sm btn-danger">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" [id]="'renovar'+v.id">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            ¿Renovar el anuncio seleccionado? - {{v.title}}
+          </div>
+          <div class="modal-footer">
+            <button data-dismiss="modal" class="btn btn-sm btn-success" (click)="renovar(v)">Renovar</button>
+            <button data-dismiss="modal" class="btn btn-sm btn-danger">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" [id]="'feature-'+v.id" *ngIf="v.featured == 0">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">Destacar el anuncio (test)</div>
+          <div class="modal-footer">
+            <button data-dismiss="modal" class="btn btn-sm btn-success" (click)="feature(v.id)">Si</button>
+            <button data-dismiss="modal" class="btn btn-sm btn-danger">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- //**// -->
+    <div [ngClass]="perfil ? 'col-sm-9' : 'col-sm-12'">
+      
+      <div [ngClass]=" v.featured == 1 ? 'media publishing featured' : 'media publishing'">
+        <div class="publishing-img" [ngStyle]="{'background-image':'url('+v.gallery[0]?.file+')'}">
+      	<div class="category-dot">
+      		<img src="assets/iconos/car.svg" alt="">
+      	</div>
+        	<div class="publishing-inner">
+        		<div class="w100">
+
+      	  		<div class="share" [routerLink]="['/detalles/'+v.id]">
+      	  			<i class="fa fa-share"></i>
+      	  		</div>
+
+      	  		<div>
+      		  		<i class="fa fa-eye"></i> {{v.views || 0}} &nbsp;&nbsp;&nbsp;
+      		  		<i class="fa fa-heart-o"></i> {{v.favorites || 0}}
+      	  		</div>
+
+      	  		<a href="https://www.google.co.ve/maps" target="_blank" class="btn see-in-map"><i class="fa fa-map-marker"></i> Ver en el mapa</a>
+        		</div>
+        	</div>
+        </div>
+        <div class="media-body">
+          <h2 class="mt-0" style="margin-bottom: 8px; overflow: hidden; height: 32px; position: relative; overflow: unset; outline: none; cursor: pointer;"><span class="v-title" [title]="v.title"
+            [routerLink]="['/detalles/'+v.id]" style="outline: none;"
+            >{{v.title}}</span>
+            
+            <div *ngIf="v.user.role == 3" class="profile-circle" [ngStyle]="{'background-image':'url('+(v?.user?.company?.logo ? v?.user?.company?.logo : v.user.avatar)+')','height':'30px','width':'30px','position':'absolute'}"></div>
+            <!-- <img *ngIf="v.user.role == 2" [src]="v.user.avatar" class="mr-2" style="width: 40px; position: absolute; top: -2px;" alt=""> -->
+            <!-- <b style="font-size: 14px; position: relative; margin-left: 45px;">Logo Empresa</b> -->
+
+            <i *ngIf="!perfil" (click)="favorite(v.id,$event)" [class]="(v.id | favorite:favorites) ? 'favorite fa fa-heart pull-right' : 'favorite fa fa-heart-o pull-right'"></i>
+
+          </h2>
+           
+          <div class="row" style="margin-bottom: 10px;">
+          	<div class="col-3">
+              <span *ngIf="v.price">
+          		  <h3 class="mb-0"><b style="font-size: 120%;">{{v.price | thousands}}€</b> <br> <small style="position: relative; top: -8px;">Al contado</small></h3>
+              </span>
+
+              <span *ngIf="v.price_professional && user?.role == 3" style="margin-bottom: -10px; display: block;">
+          		  <h3 class="mb-0" style="position: relative; top: 0px; color: #43A7E5;"><b style="font-size: 120%;">{{v.price_professional | thousands}}€</b> <br> <small style="position: relative; top: -8px; color: #333">Precio profesional</small></h3>
+              </span>
+          	</div>
+          	<div class="col-4">
+              <span *ngIf="v.price_financed">
+          		<h3 class="mb-0"><b style="font-size: 120%; color: crimson;">{{v.price_financed | thousands}}€</b> <br> <small style="position: relative; top: -8px;">Financiado</small></h3>
+              </span>
+
+          		<h3 class="mb-0" style="position: relative; top: 0px; line-height: 22px;">
+                <span *ngIf="v.guarantee"><i style="color: #249827;" class="fa fa-check"></i> <b style="font-size: 11px;">GARANTIA: {{v.guarantee_time}} meses</b> <br></span>
+                <span *ngIf="!v.guarantee"><i style="color: crimson;" class="fa fa-times"></i> <b style="font-size: 11px;">SIN GARANTIA</b> <br></span>
+                <span *ngIf="v.iva"><i style="color: #249827;" class="fa fa-check"></i> <b style="font-size: 11px;">IVA DEDUCIBLE INC.</b></span>
+                </h3>
+          	</div>
+          	<div class="col-5">
+          		<div class="row" style="font-size: 13px; line-height: 19px">
+          			<div class="col-6" style="padding:0">
+          				Kilometros: <br>
+          				Año: <br>
+          				Potencia/Motor: <br>
+          				Combustible: <br>
+          				Caja de cambios: <br>
+          			</div>
+          			<div class="col-6 pre-features" style="padding:0">
+          				<b>{{v.kilometers | thousands}} Km</b>
+                  <b>{{v.year}}</b>
+                  <b [title]="v.vehicle.features | features:'potencia_del_motor'">{{v.vehicle.features | features:'potencia_del_motor'}}</b>
+          				<b [title]="v.vehicle.features | features:'tipo_de_motor'">{{v.fuel}}</b>
+          				<b [title]="v.gearbox">{{v.gearbox}}</b>
+          			</div>
+          		</div>
+          	</div>
+          </div>
+
+          <hr style="border-width: 1px; border-color: #e9e9e9; box-shadow: 0 0 10px 1px #91aeae; ">
+      	
+      	<i class="fa fa-map-marker"></i> {{v.province}}
+
+      	<button *ngIf="v.user.role == 3" class="btn btn-sm btn-publishing btn-success">Profesional</button>
+        <button *ngIf="v.user.role == 2" class="btn btn-sm btn-publishing btn-dark">Particular</button>
+      	<button *ngIf="!perfil && v.user.role == 3 && !isProfessional" class="btn btn-sm btn-publishing btn-outline-secondary" [routerLink]="['/profesionales/'+v.user.id+'/Coches']" >Ver mas vehiculos del profesional</button>
+        <button *ngIf="perfil" [routerLink]="['/editar/'+v.id+'/Coches']" class="btn btn-sm btn-publishing btn-info">EDITAR ANUNCIO</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- //**// -->
+</div>
+
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
+
+<!-- <div *ngIf="!perfil">
+  <div class="media publishing">
+    <div class="publishing-img" [ngStyle]="{'background-image':'url(assets/bmwserie1.jpg)'}">
+  	<div class="category-dot">
+  		<img src="assets/iconos/car.svg" alt="">
+  	</div>
+    	<div class="publishing-inner">
+    		<div class="w100">
+  	  		<div class="share" [routerLink]="['/detalles/1']">
+  	  			<i class="fa fa-share"></i>
+  	  		</div>
+
+  	  		<div>
+  		  		<i class="fa fa-eye"></i> 10 234 &nbsp;&nbsp;&nbsp;
+  		  		<i class="fa fa-heart-o"></i> 253
+  	  		</div>
+
+  	  		<a href="https://www.google.co.ve/maps" target="_blank" class="btn see-in-map"><i class="fa fa-map-marker"></i> Ver en el mapa</a>
+    		</div>
+    	</div>
+    </div>
+    <div class="media-body" [routerLink]="['/detalles/2']">
+      <h2 class="mt-0" style="margin-bottom: 8px">BMW Serie 1 116d 5p <i class="fa fa-heart-o pull-right"></i></h2>
+       
+      <div class="row" style="margin-bottom: -20px;">
+      	<div class="col-3">
+      		<h3 class="mb-0"><b style="font-size: 120%;">23.000€</b> <br> <small style="position: relative; top: -8px;">Al contado</small></h3>
+      	</div>
+      	<div class="col-4">
+      		<h3 class="mb-0"><b style="font-size: 120%; color: crimson;">28.000€</b> <br> <small style="position: relative; top: -8px;">Financiado</small></h3>
+      		<h3 class="mb-0" style="position: relative; top: -10px; line-height: 22px;">
+            <i style="color: #249827;" class="fa fa-check"></i> <b style="font-size: 10px;">GARANTIA: 1 año</b> <br>
+            <i style="color: #249827;" class="fa fa-check"></i> <b style="font-size: 10px;">IVA DEDUCIBLE INC.</b></h3>
+      	</div>
+      	<div class="col-5">
+      		<div class="row" style="font-size: 12px; line-height: 19px">
+      			<div class="col-6" style="padding:0">
+      				Kilometros: <br>
+      				Año: <br>
+      				Potencia/Motor: <br>
+      				Combustible: <br>
+      				Caja de cambios: <br>
+      			</div>
+      			<div class="col-6" style="padding:0">
+      				<b>20.000 Km</b> <br>
+      				<b>2013</b> <br>
+      				<b>52/507cv</b> <br>
+      				<b>Gasolina</b> <br>
+      				<b>Manual</b> <br>
+      			</div>
+      		</div>
+      	</div>
+      </div>
+
+      <hr style="border-width: 1px; border-color: #e9e9e9; box-shadow: 0 0 10px 1px #91aeae; ">
+  	
+  	<i class="fa fa-map-marker"></i> Málaga
+
+  	<button class="btn btn-sm btn-publishing btn-dark">Particular</button>
+  	<button class="btn btn-sm btn-publishing btn-outline-secondary">Ver mas vehiculos del profesional</button>
+    </div>
+  </div>
+
+  <div class="media publishing">
+    <div class="publishing-img" [ngStyle]="{'background-image':'url(assets/renaulttrafic.jpg)'}">
+  	<div class="category-dot">
+  		<img src="assets/iconos/van.svg" alt="">
+  	</div>
+    	<div class="publishing-inner">
+    		<div class="w100">
+  	  		<div class="share" [routerLink]="['/detalles/1']">
+  	  			<i class="fa fa-share"></i>
+  	  		</div>
+
+  	  		<div>
+  		  		<i class="fa fa-eye"></i> 10 234 &nbsp;&nbsp;&nbsp;
+  		  		<i class="fa fa-heart-o"></i> 253
+  	  		</div>
+
+  	  		<a href="https://www.google.co.ve/maps" target="_blank" class="btn see-in-map"><i class="fa fa-map-marker"></i> Ver en el mapa</a>
+    		</div>
+    	</div>
+    </div>
+    <div class="media-body" [routerLink]="['/detalles/3']">
+      <h2 class="mt-0" style="margin-bottom: 8px">RENAULT Trafic. <i class="fa fa-heart-o pull-right"></i></h2>
+       
+      <div class="row" style="margin-bottom: -20px;">
+      	<div class="col-3">
+      		<h3 class="mb-0"><b style="font-size: 120%;">23.000€</b> <br> <small style="position: relative; top: -8px;">Al contado</small></h3>
+      		<h3 class="mb-0" style="position: relative; top: -10px; color: #43A7E5;"><b style="font-size: 120%;">20.000€</b> <br> <small style="position: relative; top: -8px; color: #333">Precio profesional</small></h3>
+      	</div>
+      	<div class="col-4">
+      		<h3 class="mb-0"><b style="font-size: 120%; color: crimson;">28.000€</b> <br> <small style="position: relative; top: -8px;">Financiado</small></h3>
+      		<h3 class="mb-0" style="position: relative; top: -10px; line-height: 22px;">
+            <i style="color: #249827;" class="fa fa-check"></i> <b style="font-size: 10px;">GARANTIA: 1 año</b> <br>
+            <i style="color: #249827;" class="fa fa-check"></i> <b style="font-size: 10px;">IVA DEDUCIBLE INC.</b></h3>
+      	</div>
+      	<div class="col-5">
+      		<div class="row" style="font-size: 12px; line-height: 19px">
+      			<div class="col-6" style="padding:0">
+      				Kilometros: <br>
+      				Año: <br>
+      				Potencia/Motor: <br>
+      				Combustible: <br>
+      				Caja de cambios: <br>
+      			</div>
+      			<div class="col-6" style="padding:0">
+      				<b>20.000 Km</b> <br>
+      				<b>2013</b> <br>
+      				<b>52/507cv</b> <br>
+      				<b>Gasolina</b> <br>
+      				<b>Manual</b> <br>
+      			</div>
+      		</div>
+      	</div>
+      </div>
+
+      <hr style="border-width: 1px; border-color: #e9e9e9; box-shadow: 0 0 10px 1px #91aeae; ">
+  	
+  	<i class="fa fa-map-marker"></i> Málaga
+
+  	<button class="btn btn-sm btn-publishing btn-success">Profesional</button>
+  	<button class="btn btn-sm btn-publishing btn-outline-secondary">Ver mas vehiculos del profesional</button>
+    </div>
+  </div>
+</div> -->

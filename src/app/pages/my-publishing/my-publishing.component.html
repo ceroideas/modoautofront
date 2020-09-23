@@ -1,0 +1,96 @@
+<app-header></app-header>
+
+<div class="main-wrapper">
+	
+	<div class="container">
+		
+		<div class="row">
+			<div class="col-md-3">
+				<img src="assets/logo.png" [routerLink]="['/']" class="main-logo" alt="">
+			</div>
+			<div class="col-md-6 offset-md-3">
+				<!-- <input type="text" class="form-control form-control-lg" placeholder="Buscar"> -->
+				<button class="btn btn-info btn-block" data-toggle="modal" data-target="#renovarTodo">Seleccionar y renovar todos los anuncios caducados</button>
+
+				<div class="modal fade" id="renovarTodo">
+			      <div class="modal-dialog modal-sm">
+			        <div class="modal-content">
+			          <div class="modal-header">
+			            Está a punto de renovar todos los anuncios caducados.
+			          </div>
+			          <div class="modal-footer">
+			            <button class="btn btn-sm btn-success" (click)="renovarTodo()">Renovar Todos</button>
+			            <button data-dismiss="modal" class="btn btn-sm btn-danger">Cancelar</button>
+			          </div>
+			        </div>
+			      </div>
+			    </div>
+			</div>
+		</div>
+			<!-- /**/ -->
+
+		<div class="row mt-40">
+			<div class="col-md-12">
+
+				<div class="mt-30-">
+
+					<div class="row">
+						<div class="col-sm-12">
+							<app-publishing insideP="true"></app-publishing>
+						</div>
+					</div>
+
+					<hr style="border-width: 1px; border-color: #e9e9e9; box-shadow: 0 0 10px 1px #91aeae; ">
+
+					<!-- <div class="row">
+						<div class="col-sm-12">
+							<app-publishing-mcycle [words]="words" [filters]="{user_id:user.id,loading:true,category:5,criterial: 'id', type: 'asc'}"></app-publishing-mcycle>
+						</div>
+					</div>
+
+					<hr style="border-width: 1px; border-color: #e9e9e9; box-shadow: 0 0 10px 1px #91aeae; "> -->
+
+					<div class="row">
+						<div class="col-sm-12">
+							<app-publishing-rep insideP="true"></app-publishing-rep>
+						</div>
+					</div>
+
+					<hr style="border-width: 1px; border-color: #e9e9e9; box-shadow: 0 0 10px 1px #91aeae; ">
+
+					<div class="row">
+						<div class="col-sm-12">
+							<app-publishing-ind></app-publishing-ind>
+						</div>
+					</div>
+
+					<hr style="border-width: 1px; border-color: #e9e9e9; box-shadow: 0 0 10px 1px #91aeae; ">
+
+					<br>
+					<br>
+
+					<div class="row">
+						<div class="col-md-3">
+						</div>
+						<div class="col-md-3">
+							<button class="btn btn-lg btn-secondary" style="color: #e9e9e9; padding: 10px 40px; font-size: 14px;background-color: #bdbdbd;border-color: #bdbdbd;">Cargar Más <i class="fa fa-plus"></i></button>
+						</div>
+						<div class="col-md-6">
+							
+						</div>
+					</div>
+
+				</div>
+				<!-- <div class="tab-content" id="pills-tabContent">
+				  <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">...</div>
+				  <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">...</div>
+				  <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div>
+				</div> -->
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+<app-footer></app-footer>

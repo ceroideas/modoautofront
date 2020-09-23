@@ -1,0 +1,134 @@
+<app-header></app-header>
+
+<div class="main-wrapper">
+	
+	<div class="container">
+		
+		<div class="row">
+			<div class="col-md-3">
+				<img src="assets/logo.png" [routerLink]="['/']" class="main-logo" alt="">
+			</div>
+			<div class="col-md-9">
+			</div>
+		</div>
+			<!-- /**/ -->
+
+		<div class="row mt-20">
+			<div class="col-md-3">
+				<img src="assets/banner1.jpg" class="w100" alt="">
+			</div>
+
+			<div class="col-md-9" *ngIf="!user" style="text-align: center;">
+				<i class="fa fa-lock" style="font-size: 78px;"></i>
+
+				<h3>Para guardar y ver tus favoritos debes estar registrado</h3>
+			</div>
+
+			<div class="col-md-9">
+
+				<h2 style="margin-top: 0; line-height: 1">Tus favoritos</h2>
+				
+				<div *ngIf="user" class="row">
+
+					<div class="col-sm-12" *ngIf="favorites?.length == 0">
+						<h2 style="color: #767070;">No ha agregado ningún favorito</h2>
+					</div>
+					
+					<div *ngFor="let f of favorites" class="col-sm-4" title="{{f.advert.title}}">
+						<div *ngIf="f.advert.category_id == 1">
+						  <div class="media publishing">
+						    <div class="publishing-img" [ngStyle]="{'background-image':'url('+f.advert.gallery[0].file+')','width':'100%','border-radius':'8px'}">
+						  	<div class="category-dot">
+						  		<img src="assets/iconos/car.svg" alt="">
+						  	</div>
+						  	<div class="no-disponible" *ngIf="!(f.advert.valid_until | isvalid) || !f.advert.activated_at">
+				    			<h1>ANUNCIO <br> NO DISPONIBLE <small> <i class="fa fa-trash" (click)="removeFav(f.advert.id)"></i> </small></h1>
+				    		</div>
+						    	<div class="publishing-inner publishing-inner-2" *ngIf="f.advert.activated_at">
+						    		<div class="w100">
+						  	  		<div class="share" [routerLink]="['/detalles/'+f.advert.id]">
+						  	  			<i class="fa fa-share"></i>
+						  	  		</div>
+
+						  	  		<div>
+						  		  		<i class="fa fa-eye"></i> {{f.advert.views || 0}} &nbsp;&nbsp;&nbsp;
+      		  							<i class="fa fa-heart-o"></i> {{f.advert.favorites || 0}}
+						  	  		</div>
+
+						  	  		<a href="https://www.google.co.ve/maps" target="_blank" class="btn see-in-map"><i class="fa fa-map-marker"></i> Ver en el mapa</a>
+						    		</div>
+						    	</div>
+						    </div>
+						  </div>
+						</div>
+					<!-- </div>
+
+					<div *ngFor="let f of favorites" class="col-sm-4"> -->
+						<div *ngIf="f.advert.category_id == 5">
+
+						  <div class="media publishing">
+						    <div class="publishing-img" [ngStyle]="{'background-image':'url('+f.advert.gallery[0].file+')','width':'100%','border-radius':'8px'}">
+						  	<div class="category-dot">
+						  		<img src="assets/iconos/scooter.svg" alt="">
+						  	</div>
+						    <div class="no-disponible" *ngIf="!(f.advert.valid_until | isvalid) || !f.advert.activated_at">
+				    			<h1>ANUNCIO <br> NO DISPONIBLE <small> <i class="fa fa-trash" (click)="removeFav(f.advert.id)"></i> </small></h1>
+				    		</div>
+						    	<div class="publishing-inner publishing-inner-2" *ngIf="f.advert.activated_at">
+						    		<div class="w100">
+						  	  		<div class="share" [routerLink]="['/motos/'+f.advert.id]">
+						  	  			<i class="fa fa-share"></i>
+						  	  		</div>
+
+						  	  		<div>
+						  		  		<i class="fa fa-eye"></i> {{f.advert.views || 0}} &nbsp;&nbsp;&nbsp;
+      		  							<i class="fa fa-heart-o"></i> {{f.advert.favorites || 0}}
+						  	  		</div>
+
+						  	  		<a href="https://www.google.co.ve/maps" target="_blank" class="btn see-in-map"><i class="fa fa-map-marker"></i> Ver en el mapa</a>
+						    		</div>
+						    	</div>
+						    </div>
+						  </div>
+						</div>
+
+						<div *ngIf="f.advert.category_id == 11">
+
+						  <div class="media publishing">
+						    <div class="publishing-img" [ngStyle]="{'background-image':'url('+f.advert.gallery[0].file+')','width':'100%','border-radius':'8px'}">
+						  	<div class="category-dot">
+						  		<img src="assets/iconos/motor.svg" alt="">
+						  	</div>
+						    <div class="no-disponible" *ngIf="!(f.advert.valid_until | isvalid) || !f.advert.activated_at">
+				    			<h1>ANUNCIO <br> NO DISPONIBLE <small> <i class="fa fa-trash" (click)="removeFav(f.advert.id)"></i> </small></h1>
+				    		</div>
+						    	<div class="publishing-inner publishing-inner-2" *ngIf="f.advert.activated_at">
+						    		<div class="w100">
+						  	  		<div class="share" [routerLink]="['/repuesto/'+f.advert.id]">
+						  	  			<i class="fa fa-share"></i>
+						  	  		</div>
+
+						  	  		<div>
+						  		  		<i class="fa fa-eye"></i> {{f.advert.views || 0}} &nbsp;&nbsp;&nbsp;
+      		  							<i class="fa fa-heart-o"></i> {{f.advert.favorites || 0}}
+						  	  		</div>
+
+						  	  		<!-- <button class="btn see-in-map"><i class="fa fa-map-marker"></i> Ver en el mapa</button> -->
+						    		</div>
+						    	</div>
+						    </div>
+						  </div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+
+		</div>
+
+	</div>
+
+</div>
+
+<app-footer></app-footer>

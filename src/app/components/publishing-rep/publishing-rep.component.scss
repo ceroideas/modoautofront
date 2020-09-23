@@ -1,0 +1,131 @@
+.publishing {
+	box-shadow: 0 0 50px -15px #595d66;
+	margin-bottom: 20px;
+	border-radius: 8px;
+	.publishing-img {
+		position: relative;
+		border-radius: 8px 0 0 8px;
+		width: 30%;
+		height: 220px;
+		background-size: cover;
+		background-position: center;
+		.publishing-inner {
+			border-radius: 8px 0 0 8px;
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			background-color: rgba(0,0,0,.7);
+			opacity: 0;
+			transition: all 200ms;
+			display: flex;
+			align-items: center;
+			text-align: center;
+			color: #fffefc;
+			font-size: 12px;
+			.share {
+				display: block;
+				margin: auto;
+				cursor: pointer;
+				border: 2px solid #fffefc;
+				padding: 12px;
+				width: 46px;
+				height: 46px;
+				color: #fffefc;
+				border-radius: 50px;
+				margin-bottom: 20px;
+			}
+			.fa-eye {color: #5ba5a6;}
+			.fa-heart-o {color: #e17e55;}
+			.see-in-map {
+				margin-top: 20px;
+				font-size: 13px;
+				background-color: #2b363c;
+				color: #a2adb3;
+				border-radius: 20px;
+			}
+		}
+		&:hover .publishing-inner {
+			opacity: 1;
+		}
+		.category-dot {
+			width: 46px;
+			height: 46px;
+			padding: 8px;
+			background-color: #404950;
+			border-radius: 50px;
+			position: absolute;
+			right: -23px;
+			top: 15px;
+			z-index: 1;
+			img {
+				width: 30px;
+				filter: invert(1) sepia(0) saturate(1) hue-rotate(0deg) brightness(1.2);
+			}
+		}
+	}
+	.media-body {
+		padding: 10px 30px;
+		width: 70%;
+	}
+	.btn-publishing {
+		padding: 0rem 1.5rem;
+		margin-left: 20px;
+	}
+}
+
+.card-detail {
+	line-height: 30px;
+	font-size: 16px;
+	min-height: 226px;
+	span {
+		cursor: pointer;
+	}
+}
+
+.svg-profile {
+	width: 24px; margin-right: 10px; position: relative; top: -1px;
+}
+
+.share-box {
+	position: relative;
+	display: block;
+}
+
+.share-panel {
+	position: absolute;
+	width: fit-content;
+	background-color: #fff;
+	padding: 10px;
+	min-width: 160px;
+	border-radius: 50px;
+	top: 35px;
+	// right: -112%;
+	display: none;
+	transition: all 200ms;
+	box-shadow: 0 0 5px silver;
+	z-index: 9;
+	img {
+		height: 20px;
+		display: inline-block;
+		margin: 0 10px;
+	}
+	&:before {
+		content: "";
+		position: absolute;
+		top: -30px;
+		left: 0;
+		right: 0;
+		margin: auto;
+		width: 0;
+		height: 0;
+		border-right: 15px solid transparent;
+		border-top: 15px solid transparent;
+		border-left: 15px solid transparent;
+		border-bottom: 15px solid #fff;
+	}
+}
+.share-box:hover .share-panel {
+	display: block;
+}

@@ -1,0 +1,361 @@
+<div class="card" style="border-color: #a0a0a0;">
+	<div class="card-heading" style="padding: 14px 10px; border-bottom: 1px solid #a0a0a0; text-align: center;">
+		<button class="btn btn-secondary btn-sm" (click)="saveFilter()" style="background-color:#e9e9e9;font-size:10px;float:left;color:#333; border-color: #a0a0a0">Guardar búsqueda</button>
+		<button class="btn btn-secondary btn-sm" (click)="deleteFilter()" style="background-color:#e9e9e9;font-size:10px;float:right;color:#333; border-color: #a0a0a0">Borrar filtro</button>
+
+		<div class="clearfix"></div>
+
+		<h1 style="margin: 15px 0 5px; font-size: 24px;">{{results}}</h1>
+		<h4 style="margin: 0" (click)="loadFilter()">Vehiculos encontrados</h4>
+	</div>
+	<div class="card-body card-filter">
+
+		<div class="form-group">
+			
+			<label no-margin><small><b>TIPO</b></small></label> <br>
+			<div class="custom-control custom-checkbox">
+			  <input type="checkbox" class="custom-control-input" id="segundamano" (click)="assignType(1,$event,'status')">
+			  <label class="custom-control-label" for="segundamano"><span style="position:relative;top:3px">Segunda mano</span></label>
+			</div>
+
+			<!-- <div class="custom-control custom-checkbox">
+			  <input type="checkbox" class="custom-control-input" id="km0">
+			  <label class="custom-control-label" for="km0"><span style="position:relative;top:3px">KM0</span></label>
+			</div> -->
+
+			<div class="custom-control custom-checkbox">
+			  <input type="checkbox" class="custom-control-input" id="nuevo" (click)="assignType(0,$event,'status')">
+			  <label class="custom-control-label" for="nuevo"><span style="position:relative;top:3px">Nuevo</span></label>
+			</div>
+		</div>
+
+
+		<div class="form-group">
+			<label no-margin><small><b>PROVINCIAS</b></small></label> <br>
+			<select2 class="custom-select2" [data]="provinces"
+				placeholder="Provincia"
+				[value]="value"
+				displaySearchStatus="always"
+				multiple_
+				[(ngModel)]="province"
+			    (update)="filter()">
+			</select2>
+		</div>
+		<div class="form-group">
+			<label no-margin><small><b>MARCA, MODELO Y VERSION</b></small></label> <br>
+			<select2 class="custom-select2" [data]="brands"
+				placeholder="Marca"
+			    displaySearchStatus="always"
+			    multiple="multiple"
+			    [(ngModel)]="brand"
+			    (update)="loadModels()">
+			</select2>
+		<!-- </div>
+		<div class="form-group">
+			<label no-margin><small><b>MODELO</b></small></label> <br> -->
+			<select2 class="custom-select2" [data]="models"
+				placeholder="Modelo"
+			    displaySearchStatus="always"
+			    multiple_
+			    [disabled]="brand.length > 1"
+			    [(ngModel)]="model"
+			    (update)="loadVersions()">
+			</select2>
+		<!-- </div>
+		<div class="form-group">
+			<label no-margin><small><b>VERSIÓN</b></small></label> <br> -->
+			<select2 class="custom-select2" [data]="versions"
+				placeholder="Versión"
+			    displaySearchStatus="always"
+			    multiple_
+			    [disabled]="brand.length > 1"
+			    [(ngModel)]="version"
+			    (update)="filter()">
+			</select2>
+		</div>
+
+		<div class="form-group">
+			<label no-margin><small><b>TIPO DE PRECIO</b></small></label> <br>
+
+			<div class="btn-group" role="group" aria-label="Basic example">
+			  <input type="radio" name="price_type" id="price_type0" [(ngModel)]="price_type" value="0" (change)="filter()"> <label for="price_type0" class="btn btn-secondary">Contado</label>
+			  <input type="radio" name="price_type" id="price_type1" [(ngModel)]="price_type" value="1" (change)="filter()"> <label for="price_type1" class="btn btn-secondary">Financiado</label>
+			</div>
+
+			<div class="custom-control custom-checkbox">
+			  <input type="checkbox" class="custom-control-input" id="customCheck4" [(ngModel)]="guarantee" (change)="filter()">
+			  <label class="custom-control-label" for="customCheck4"><span style="position:relative;top:3px">CON GARANTIA</span></label>
+			</div>
+
+			<div class="custom-control custom-checkbox">
+			  <input type="checkbox" class="custom-control-input" id="customCheck5" [(ngModel)]="iva" (change)="filter()">
+			  <label class="custom-control-label" for="customCheck5"><span style="position:relative;top:3px">IVA DEDUCIBLE</span></label>
+			</div>
+
+			<!-- <div class="custom-control custom-checkbox">
+			  <input type="checkbox" class="custom-control-input" id="customCheck6">
+			  <label class="custom-control-label" for="customCheck6"><span style="position:relative;top:3px">CERTIFICADO</span></label>
+			</div> -->
+		</div>
+
+		<div class="form-group">
+			<label no-margin><small><b>PRECIO</b></small></label> <br>
+			<!-- <div class="input-group"> -->
+				<!-- <select [(ngModel)]="price.from" (change)="filter()" class="form-control form-control-filter" placeholder="Desde">
+					<option value="{{i}}" *ngFor="let i of pricesList">Desde {{i | thousands}}€</option>
+				</select> -->
+				<select2 class="custom-select2" [data]="prices_"
+					placeholder="Desde"
+				    displaySearchStatus="always"
+				    multiple_
+				    [(ngModel)]="price.from"
+				    (update)="filter()">
+				</select2>
+				<!-- <select [(ngModel)]="price.to" (change)="filter()" class="form-control form-control-filter" placeholder="Hasta">
+					<option value="{{i}}" *ngFor="let i of pricesList">Hasta {{i | thousands}}€</option>
+					<option value="999999">Más de 70.000€</option>
+				</select> -->
+				<select2 class="custom-select2" [data]="prices_"
+					placeholder="Hasta"
+				    displaySearchStatus="always"
+				    multiple_
+				    [(ngModel)]="price.to"
+				    (update)="filter()">
+				</select2>
+				<!-- <input type="number" [(ngModel)]="price.from" (change)="filter()" class="form-control form-control-filter" placeholder="Desde">
+				<input type="number" [(ngModel)]="price.to" (change)="filter()" class="form-control form-control-filter" placeholder="Hasta"> -->
+			<!-- </div> -->
+		</div>
+		
+		<div class="form-group">
+			<label no-margin><small><b>AÑO</b></small></label> <br>
+			<!-- <div class="input-group">
+				<select [(ngModel)]="years.from" (change)="filter()" class="form-control form-control-filter" placeholder="Desde">
+					<option value="{{i}}" *ngFor="let i of yearsList">Desde {{i}}</option>
+				</select>
+				<select [(ngModel)]="years.to" (change)="filter()" class="form-control form-control-filter" placeholder="Hasta">
+					<option value="{{i}}" *ngFor="let i of yearsList">Hasta {{i}}</option>
+				</select>
+			</div> -->
+			<select2 class="custom-select2" [data]="years_"
+				placeholder="Desde"
+			    displaySearchStatus="always"
+			    multiple_
+			    [(ngModel)]="years.from"
+			    (update)="filter()">
+			</select2>
+
+			<select2 class="custom-select2" [data]="years_"
+				placeholder="Hasta"
+			    displaySearchStatus="always"
+			    multiple_
+			    [(ngModel)]="years.to"
+			    (update)="filter()">
+			</select2>
+		</div>
+		
+		<div class="form-group">
+			<label no-margin><small><b>KM</b></small></label> <br>
+			<!-- <div class="input-group">
+				<select [(ngModel)]="kilometers.from" (change)="filter()" class="form-control form-control-filter" placeholder="Desde">
+					<option value="{{i}}" *ngFor="let i of kilometersList">Desde {{i | thousands}}Km</option>
+				</select>
+				<select [(ngModel)]="kilometers.to" (change)="filter()" class="form-control form-control-filter" placeholder="Hasta">
+					<option value="{{i}}" *ngFor="let i of kilometersList">Hasta {{i | thousands}}Km</option>
+					<option value="999999">Más de 200.000Km</option>
+				</select>
+			</div> -->
+
+			<select2 class="custom-select2" [data]="kilometers_"
+				placeholder="Desde"
+			    displaySearchStatus="always"
+			    multiple_
+			    [(ngModel)]="kilometers.from"
+			    (update)="filter()">
+			</select2>
+
+			<select2 class="custom-select2" [data]="kilometers_"
+				placeholder="Hasta"
+			    displaySearchStatus="always"
+			    multiple_
+			    [(ngModel)]="kilometers.to"
+			    (update)="filter()">
+			</select2>
+		</div>
+
+		<div class="form-group">
+			<label no-margin><small><b>COMBUSTIBLE</b></small></label> <br>
+			<select2 class="custom-select2" [data]="fuels"
+			    [value]="value"
+			    displaySearchStatus="always"
+			    multiple_
+			    [(ngModel)]="fuel"
+			    (update)="filter()">
+			</select2>
+		</div>
+
+		<div class="form-group">
+			<label no-margin><small><b>TIPO DE CAMBIO</b></small></label> <br>
+			<select2 class="custom-select2" [data]="gearboxes"
+				[value]="value"
+				displaySearchStatus="always"
+				multiple_
+				[(ngModel)]="gearbox"
+			    (update)="filter()">
+			</select2>
+		</div>
+
+		<div class="form-group">
+			<label no-margin><small><b>POTENCIA (CV)</b></small></label> <br>
+			<!-- <div class="input-group">
+				<select [(ngModel)]="power.from" (change)="filter()" class="form-control form-control-filter" placeholder="Desde">
+					<option value="{{i}}" *ngFor="let i of powerList">Desde {{i | thousands}}cv</option>
+				</select>
+				<select [(ngModel)]="power.to" (change)="filter()" class="form-control form-control-filter" placeholder="Hasta">
+					<option value="{{i}}" *ngFor="let i of powerList">Hasta {{i | thousands}}cv</option>
+					<option value="9999">Más de 500cv</option>
+				</select>
+			</div> -->
+
+			<select2 class="custom-select2" [data]="power_"
+				placeholder="Desde"
+			    displaySearchStatus="always"
+			    multiple_
+			    [(ngModel)]="power.from"
+			    (update)="filter()">
+			</select2>
+
+			<select2 class="custom-select2" [data]="power_"
+				placeholder="Hasta"
+			    displaySearchStatus="always"
+			    multiple_
+			    [(ngModel)]="power.to"
+			    (update)="filter()">
+			</select2>
+		</div>
+
+		<div class="form-group">
+			<label no-margin><small><b>CARROCERIA</b></small></label> <br>
+			<div class="row text-center">
+				<div class="col-6">
+					<input type="checkbox" id="berlina" class="radio-bw" (change)="selectBW('Berlina')">
+					<label for="berlina" class="img-carroceria" [ngStyle]="{'background-image': 'url(assets/coches/berlina.png)'}">
+						<small style="font-size: 10px;"><b>BERLINA</b></small>
+					</label>
+				</div>
+				<div class="col-6">
+					<input type="checkbox" id="sedán" class="radio-bw" (change)="selectBW('Sedán')">
+					<label for="sedán" class="img-carroceria" [ngStyle]="{'background-image': 'url(assets/coches/familiar.png)'}">
+						<small style="font-size: 10px;"><b>FAMILIAR</b></small>
+					</label>
+				</div>
+				<div class="col-6">
+					<input type="checkbox" id="kupe" class="radio-bw" (change)="selectBW('Kupe')">
+					<label for="kupe" class="img-carroceria" [ngStyle]="{'background-image': 'url(assets/coches/coupe.png)'}">
+						<small style="font-size: 10px;"><b>COUPE</b></small>
+					</label>
+				</div>
+				<div class="col-6">
+					<input type="checkbox" id="cabriolet" class="radio-bw" (change)="selectBW('Cabriolet')">
+					<label for="cabriolet" class="img-carroceria" [ngStyle]="{'background-image': 'url(assets/coches/cabrio.png)'}">
+						<small style="font-size: 10px;"><b>CABRIO</b></small>
+					</label>
+				</div>
+				<div class="col-6">
+					<input type="checkbox" id="minivan" class="radio-bw" (change)="selectBW('Minivan')">
+					<label for="minivan" class="img-carroceria" [ngStyle]="{'background-image': 'url(assets/coches/monovolumen.png)'}">
+						<small style="font-size: 10px;"><b>MONOVOLUMEN</b></small>
+					</label>
+				</div>
+				<div class="col-6">
+					<input type="checkbox" id="hatchback" class="radio-bw" (change)="selectBW('Hatchback')">
+					<label for="hatchback" class="img-carroceria" [ngStyle]="{'background-image': 'url(assets/coches/pequeno.png)'}">
+						<small style="font-size: 10px;"><b>AUTO PEQUEÑO</b></small>
+					</label>
+				</div>
+				<div class="col-6">
+					<input type="checkbox" id="camioneta" class="radio-bw" (change)="selectBW('Camioneta')">
+					<label for="camioneta" class="img-carroceria" [ngStyle]="{'background-image': 'url(assets/coches/pickup2.png)'}">
+						<small style="font-size: 10px;"><b>PICK UP</b></small>
+					</label>
+				</div>
+				<div class="col-6">
+					<input type="checkbox" id="suv" class="radio-bw" (change)="selectBW('SUV')">
+					<label for="suv" class="img-carroceria" [ngStyle]="{'background-image': 'url(assets/coches/4x4suv.png)'}">
+						<small style="font-size: 10px;"><b>4X4 SUV</b></small>
+					</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label no-margin><small><b>COLOR</b></small></label> <br>
+			<select2 class="custom-select2" [data]="colors"
+				[value]="value"
+				displaySearchStatus="always"
+				multiple_
+				[(ngModel)]="color"
+			    (update)="filter()">
+			</select2>
+		</div>
+
+		<div class="form-group">
+			<label no-margin><small><b>NÚMERO DE PLAZAS</b></small></label> <br>
+			<select2 class="custom-select2" [data]="places"
+				[value]="value"
+				displaySearchStatus="always"
+				multiple_
+				[(ngModel)]="place"
+			    (update)="filter()">
+			</select2>
+		</div>
+
+		<div class="form-group">
+			<label no-margin><small><b>NÚMERO DE PUERTAS</b></small></label> <br>
+			<select2 class="custom-select2" [data]="doors"
+				[value]="value"
+				displaySearchStatus="always"
+				multiple_
+				[(ngModel)]="door"
+			    (update)="filter()">
+			</select2>
+		</div>
+
+		<div class="form-group">
+			<label no-margin><small><b>CAPACIDAD MALETERO (L)</b></small></label> <br>
+			<div class="input-group">
+				<input type="number" [(ngModel)]="capacity.from" (change)="filter()" class="form-control form-control-filter" placeholder="Desde">
+				<input type="number" [(ngModel)]="capacity.to" (change)="filter()" class="form-control form-control-filter" placeholder="Hasta">
+			</div>
+			<!-- <select2 class="custom-select2" [data]="capacities"
+			    [value]="value"
+			    displaySearchStatus="always"
+			    multiple_
+			    [(ngModel)]="capacity"
+			    (update)="filter()">
+			</select2> -->
+		</div>
+
+		<div class="form-group">
+			<label no-margin><small><b>TIPO DE VENDEDOR</b></small></label> <br>
+
+			<!-- <div class="custom-control custom-checkbox">
+			  <input type="checkbox" class="custom-control-input" id="customCheck7">
+			  <label class="custom-control-label" for="customCheck7"><span style="position:relative;top:3px">Todos</span></label>
+			</div> -->
+
+			<div class="custom-control custom-checkbox">
+			  <input type="checkbox" class="custom-control-input" id="customCheck8" (click)="assignType(3,$event,'seller')">
+			  <label class="custom-control-label" for="customCheck8"><span style="position:relative;top:3px">Profesional</span></label>
+			</div>
+
+			<div class="custom-control custom-checkbox">
+			  <input type="checkbox" class="custom-control-input" id="customCheck9" (click)="assignType(2,$event,'seller')">
+			  <label class="custom-control-label" for="customCheck9"><span style="position:relative;top:3px">Particular</span></label>
+			</div>
+
+		</div>
+
+
+	</div>
+</div>

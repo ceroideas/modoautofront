@@ -1,0 +1,102 @@
+<div class="modal fade" id="contacto-directo">
+	
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 style="margin: 0">Has una pregunta al vendedor <br> <b>{{v.title}}</b></h4>
+
+				<i class="fa fa-times" id="close-modal" style="cursor: pointer;" data-dismiss="modal"></i>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<textarea [(ngModel)]="contact" class="form-control" rows="4" placeholder="Escribe tu pregunta aquí"></textarea>
+				</div>
+
+				<button (click)="contactar()" class="btn btn-success">Enviar al vendedor</button>
+			</div>
+		</div>
+	</div>
+	<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
+
+
+</div>
+
+<!-- /**/ -->
+
+<div class="modal fade" id="denunciar">
+	
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 style="margin: 0">Denunciar el anuncio <br> <b>{{v.title}}</b></h4>
+
+				<i class="fa fa-times" id="close-modal2" style="cursor: pointer;" data-dismiss="modal"></i>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<div style="margin-bottom: 8px;">
+						Nombre del usuario: <b>{{v?.user.name+' '+v?.user.last_name}}</b>
+					</div>
+					<div style="margin-bottom: 8px;" *ngIf="v?.user?.company">
+						Nombre de empresa: <b>{{v?.user?.company?.title}}</b>
+					</div>
+					<textarea [(ngModel)]="details" class="form-control" rows="4" placeholder="Detalle su denuncia aquí"></textarea>
+				</div>
+
+				<button (click)="denunciar()" class="btn btn-success">Enviar denuncia</button>
+			</div>
+		</div>
+	</div>
+	<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
+
+
+</div>
+
+<div class="modal fade" id="calificar">
+	
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 style="margin: 0">Calificar al vendedor <br> <b>{{v.user.name+' '+v.user.last_name}} <span *ngIf="v?.user?.company">( {{v?.user?.company?.title}} )</span></b></h4>
+
+				<i class="fa fa-times" id="close-modal3" style="cursor: pointer;" data-dismiss="modal"></i>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<div style="margin-bottom: 8px;">
+						
+						<h3 class="stars">
+							<input type="radio" name="stars" [(ngModel)]="stars" value="1" id="stars-1" style="display: none">
+							<label for="stars-1">
+								<i [ngClass]="'fa fa-star'+(stars >= 1 ? '' : '-o')"></i>
+							</label>
+							<input type="radio" name="stars" [(ngModel)]="stars" value="2" id="stars-2" style="display: none">
+							<label for="stars-2">
+								<i [ngClass]="'fa fa-star'+(stars >= 2 ? '' : '-o')"></i>
+							</label>
+							<input type="radio" name="stars" [(ngModel)]="stars" value="3" id="stars-3" style="display: none">
+							<label for="stars-3">
+								<i [ngClass]="'fa fa-star'+(stars >= 3 ? '' : '-o')"></i>
+							</label>
+							<input type="radio" name="stars" [(ngModel)]="stars" value="4" id="stars-4" style="display: none">
+							<label for="stars-4">
+								<i [ngClass]="'fa fa-star'+(stars >= 4 ? '' : '-o')"></i>
+							</label>
+							<input type="radio" name="stars" [(ngModel)]="stars" value="5" id="stars-5" style="display: none">
+							<label for="stars-5">
+								<i [ngClass]="'fa fa-star'+(stars >= 5 ? '' : '-o')"></i>
+							</label>
+						</h3>
+
+					</div>
+					<textarea [(ngModel)]="comment" class="form-control" rows="4" placeholder="Haga algún comentario sobre el vendedor (opcional)"></textarea>
+				</div>
+
+				<button (click)="calificar()" class="btn btn-success">Calificar</button>
+			</div>
+		</div>
+	</div>
+	<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
+
+
+</div>

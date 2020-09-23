@@ -1,0 +1,149 @@
+<app-header></app-header>
+
+<div class="main-wrapper">
+	
+	<div class="container">
+		
+		<div class="row">
+			<div class="col-md-3">
+				<img src="assets/logo.png" [routerLink]="['/']" class="main-logo" alt="">
+			</div>
+			<div class="col-md-9">
+			</div>
+		</div>
+			<!-- /**/ -->
+
+		<div class="row mt-20">
+			<div class="col-md-3">
+				<img src="assets/banner1.jpg" class="w100" alt="">
+			</div>
+
+			<div class="col-md-9" *ngIf="!user" style="text-align: center;">
+				<i class="fa fa-lock" style="font-size: 78px;"></i>
+
+				<h3>Para guardar y ver tus búsquedas debes estar registrado</h3>
+			</div>
+
+			<div class="col-md-9">
+
+				<h2 style="margin-top: 0; line-height: 1">Mis búsquedas guardadas</h2>
+				
+				<div *ngIf="user" class="row">
+					
+					<div *ngFor="let s of searches; let i = index" class="col-sm-4">
+						<div *ngIf="s.category_id == 1" class="busquedas">
+						  <b>Coches</b> <br>
+
+						  <div class="filter-features">
+						  	
+							  <li *ngIf="(s.humans | features:'filters':'brands').length > 0">{{ (s.humans | features:'filters':'brands') }}</li>
+							  <li *ngIf="(s.humans | features:'filters':'years').from">Desde el año: {{ (s.humans | features:'filters':'years').from }}</li>
+							  <li *ngIf="(s.humans | features:'filters':'years').to">Hasta el año: {{ (s.humans | features:'filters':'years').to }}</li>
+							  <li *ngIf="(s.humans | features:'filters':'model') ">{{ (s.humans | features:'filters':'model') }}</li>
+							  <li *ngIf="(s.humans | features:'filters':'fuel') ">{{ (s.humans | features:'filters':'fuel') }}</li>
+							  <li *ngIf="(s.humans | features:'filters':'capacity').from">Capacidad desde: {{ (s.humans | features:'filters':'capacity').from }}</li>
+							  <li *ngIf="(s.humans | features:'filters':'capacity').to">Capacidad hasta: {{ (s.humans | features:'filters':'capacity').to }}</li>
+							  <li *ngIf="(s.humans | features:'filters':'bwork').length > 0 ">{{ (s.humans | features:'filters':'bwork') }}</li>
+							  <li *ngIf="(s.humans | features:'filters':'power').from">Potencia desde: {{ (s.humans | features:'filters':'power').from }}</li>
+							  <li *ngIf="(s.humans | features:'filters':'power').to">Potencia hasta: {{ (s.humans | features:'filters':'power').to }}</li>
+							  <li *ngIf="(s.humans | features:'filters':'places') ">{{ (s.humans | features:'filters':'places') }} plazas</li>
+							  <li *ngIf="(s.humans | features:'filters':'doors') ">{{ (s.humans | features:'filters':'doors') }} puertas</li>
+							  <li *ngIf="(s.humans | features:'filters':'price').from">Precio desde: {{ (s.humans | features:'filters':'price').from }}€</li>
+							  <li *ngIf="(s.humans | features:'filters':'price').to">Precio hasta: {{ (s.humans | features:'filters':'price').to }}€</li>
+							  <li *ngIf="(s.humans | features:'filters':'gearbox') ">{{ (s.humans | features:'filters':'gearbox') }}</li>
+							  <li *ngIf="(s.humans | features:'filters':'province') ">{{ (s.humans | features:'filters':'province') }}</li>
+							  <li *ngIf="(s.humans | features:'filters':'kilometers').from">Kilometos desde: {{ (s.humans | features:'filters':'kilometers').from }}</li>
+							  <li *ngIf="(s.humans | features:'filters':'kilometers').to">Kilometos desde: {{ (s.humans | features:'filters':'kilometers').to }}</li>
+							  <li *ngIf="(s.humans | features:'filters':'color') ">{{ (s.humans | features:'filters':'color') }}</li>
+
+						  </div>
+
+						  <br>
+
+						  <button type="button" class="btn btn-sm btn-success" (click)="verFiltro(s.filters,'busquedas/Coches/'+s.id)">Ver filtro</button>
+						  <button type="button" class="btn btn-sm btn-danger" style="float: right" data-toggle="modal" [attr.data-target]="'#delete-filter'+s.id">Borrar filtro</button>
+
+						  <div class="modal fade" [id]="'delete-filter'+s.id">
+						  	<div class="modal-dialog modal-sm">
+						  		<div class="modal-content">
+						  			<div class="modal-header">
+						  				Borrar la búsqueda seleccionada?
+						  			</div>
+						  			<div class="modal-footer">
+						  				<button data-dismiss="modal" class="btn btn-sm btn-success" (click)="deleteFiltro(s.id,i)">Si</button>
+						  				<button data-dismiss="modal" class="btn btn-sm btn-warning">Cancelar</button>
+						  			</div>
+						  		</div>
+						  	</div>
+						  </div>
+						</div>
+					
+						<div *ngIf="s.category_id == 5" class="busquedas">
+							<b>Motos</b> <br> 
+
+							<div class="filter-features">
+								
+							</div>
+
+							<br>
+
+							<button type="button" class="btn btn-sm btn-success" (click)="verFiltro(s.filters,'busquedas/Motos/'+s.id)">Ver filtro</button>
+							<button type="button" class="btn btn-sm btn-danger" style="float: right" data-toggle="modal" [attr.data-target]="'#delete-filter'+s.id">Borrar filtro</button>
+
+						  <div class="modal fade" [id]="'delete-filter'+s.id">
+						  	<div class="modal-dialog modal-sm">
+						  		<div class="modal-content">
+						  			<div class="modal-header">
+						  				Borrar la búsqueda seleccionada?
+						  			</div>
+						  			<div class="modal-footer">
+						  				<button data-dismiss="modal" class="btn btn-sm btn-success" (click)="deleteFiltro(s.id,i)">Si</button>
+						  				<button data-dismiss="modal" class="btn btn-sm btn-warning">Cancelar</button>
+						  			</div>
+						  		</div>
+						  	</div>
+						  </div>
+						</div>
+
+						<div *ngIf="s.category_id == 11" class="busquedas">
+							<b>Repuestos</b> <br>
+
+							<div class="filter-features">
+								<li *ngIf="(s.humans | features:'filters':'province') ">{{ (s.humans | features:'filters':'province') }}</li>
+								<li *ngIf="(s.humans | features:'filters':'status') ">{{ (s.humans | features:'filters':'status') }}</li>
+								<li *ngIf="(s.humans | features:'filters':'price').from">Precio desde: {{ (s.humans | features:'filters':'price').from }}€</li>
+							  	<li *ngIf="(s.humans | features:'filters':'price').to">Precio hasta: {{ (s.humans | features:'filters':'price').to }}€</li>
+							</div>
+
+							<br>
+
+							<button type="button" class="btn btn-sm btn-success" (click)="verFiltro(s.filters,'busquedas/Repuestos/'+s.id)">Ver filtro</button>
+							<button type="button" class="btn btn-sm btn-danger" style="float: right" data-toggle="modal" [attr.data-target]="'#delete-filter'+s.id">Borrar filtro</button>
+
+						  <div class="modal fade" [id]="'delete-filter'+s.id">
+						  	<div class="modal-dialog modal-sm">
+						  		<div class="modal-content">
+						  			<div class="modal-header">
+						  				Borrar la búsqueda seleccionada?
+						  			</div>
+						  			<div class="modal-footer">
+						  				<button data-dismiss="modal" class="btn btn-sm btn-success" (click)="deleteFiltro(s.id,i)">Si</button>
+						  				<button data-dismiss="modal" class="btn btn-sm btn-warning">Cancelar</button>
+						  			</div>
+						  		</div>
+						  	</div>
+						  </div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+
+		</div>
+
+	</div>
+
+</div>
+
+<app-footer></app-footer>

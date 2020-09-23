@@ -1,31 +1,402 @@
-<div class="container">
-  	<h1 style="margin-top: 16px">Modo Auto</h1>
+<div id="header-1">
+	<!-- <div class="container"> -->
+		<!-- /**/ -->
+		<nav class="navbar navbar-expand-lg navbar-light" style="height: 60px;">
+			<div class="container">
+			  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			    <span class="navbar-toggler-icon"></span>
+			  </button>
+
+			  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+			    <ul class="navbar-nav mr-auto">
+			        <li class="nav-item mr-20" style="text-align: center;">
+			        	<a class="nav-link" href="#" style="display: inline-block;"> English <img src="assets/england.svg" alt="" style="width: 25px; position: relative; top: -1px; margin-left: 6px;"></a>
+			        </li>
+			    </ul>
+
+			    <ul class="navbar-nav">
+			        <li class="nav-item mr-20" style="text-align: center;">
+			        	<a class="nav-link" [routerLink]="['/favoritos']"><img src="assets/iconos/heart.svg" class="svg-title inline" alt=""> Favoritos</a>
+			        </li>
+			        <li class="nav-item mr-20" style="border-right: 1px solid silver;height: 25px; top: 7px;position: relative;">
+			        </li>
+			        <li class="nav-item mr-20" style="text-align: center;">
+			        	<button [routerLink]="['/publicar']" class="btn btn-danger" style="position: relative; top: 0px; font-size: 14px;">Anunciar <b>GRATIS</b></button>
+			        </li>
+			        <li class="nav-item mr-20" style="border-right: 1px solid silver;height: 25px; top: 7px;position: relative;">
+			        </li>
+			        <li class="nav-item mr-20" style="text-align: center;" >
+
+			        	<div class="dropdown" *ngIf="user">
+						  <span class="dropdown-toggle nav-link" type="span" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						    <span>{{user.name+' '+user.last_name}}</span> <div class="profile-circle" [ngStyle]="{'background-image': 'url('+(user.avatar || 'assets/user.svg')+')'}">
+						    	<span *ngIf="newmessages" class="circle-new-message"></span>
+						    </div>
+						  </span>
+						  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						    <a class="dropdown-item" [routerLink]="['/mi-perfil']">Mi cuenta</a>
+						    <a class="dropdown-item" [routerLink]="['/mis-anuncios']">Mis anuncios</a>
+						    <a class="dropdown-item" [routerLink]="['/favoritos']">Favoritos</a>
+						    <a class="dropdown-item" [routerLink]="['/busquedas']">Búsquedas</a>
+						    <a class="dropdown-item" (click)="logout()">Salir</a>
+						  </div>
+						</div>
+						<a class="nav-link" data-toggle="modal" *ngIf="!user" href="#login-modal"><span>Acceder</span> <div class="profile-circle" style="background-image: url(assets/user.svg)"></div></a>
+
+						<div class="modal fade" tabindex="-1" role="dialog" id="login-modal" style="z-index: 9999">
+						  <div class="modal-dialog modal-sm" role="document">
+						    <div class="modal-content">
+						      <ngx-loading [show]="modalLoading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
+						      <div class="modal-header">
+						        <h5 class="modal-title" id="title-header">Accede con tu cuenta</h5>
+						        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						          <span aria-hidden="true">&times;</span>
+						        </button>
+						      </div>
+						      <div class="modal-body" style="text-align: left;">
+
+						      	<div class="tabbable">
+						      		<div class="tab-content">
+						      			<div class="tab-pane active show" id="login">
+
+						      				<form class="form" [formGroup]="validations_form" (ngSubmit)="loginUser(validations_form.value)">
+						      				
+										        <div class="form-group">
+										        	<label>Email</label>
+										        	<div class="input-group mb-3">
+													  <div class="input-group-prepend">
+													    <span class="input-group-text" id="basic-addon1"><i class="fa fa-envelope"></i></span>
+													  </div>
+													  <input type="text" formControlName="email" class="form-control" placeholder="E-mail *" aria-label="E-mail" aria-describedby="basic-addon1">
+													</div>
+													<div class="validation-errors">
+											          <ng-container *ngFor="let validation of validation_messages.email">
+											            <div class="error-message" *ngIf="validations_form.get('email').hasError(validation.type) && (validations_form.get('email').dirty || validations_form.get('email').touched)">
+											              {{ validation.message }}
+											            </div>
+											          </ng-container>
+											        </div>
+										        </div>
+
+										        <div class="form-group">
+										        	<label>Contraseña</label>
+										        	<div class="input-group mb-3">
+													  <div class="input-group-prepend">
+													    <span class="input-group-text" id="basic-addon2"><i class="fa fa-lock"></i></span>
+													  </div>
+													  <input type="password" formControlName="password" class="form-control" placeholder="Contraseña *" aria-label="Contraseña" aria-describedby="basic-addon2">
+													</div>
+													<div class="validation-errors">
+											          <ng-container *ngFor="let validation of validation_messages.password">
+											            <div class="error-message" *ngIf="validations_form.get('password').hasError(validation.type) && (validations_form.get('password').dirty || validations_form.get('password').touched)">
+											              {{ validation.message }}
+											            </div>
+											          </ng-container>
+											        </div>
+										        </div>
+
+										        <div class="custom-control custom-checkbox">
+												  <input type="checkbox" class="custom-control-input" id="customCheck1" formControlName="remember">
+												  <label class="custom-control-label" for="customCheck1">No cerrar sesión</label>
+												</div>
+
+												<div *ngIf="errorMessage">
+													<div class="alert alert-danger" role="alert">
+													  {{errorMessage}}
+													</div>
+												</div>
+
+												<br>
+
+												<div class="form-group">
+													<button type="submit" [disabled]="!validations_form.valid" class="btn btn-primary btn-block">Iniciar Sesión</button>
+												</div>
+
+												<div class="form-group">
+													<button type="button" class="btn btn-outline-secondary btn-block" data-h5-title="Crea tu cuenta" data-toggle="tab" data-target="#register">¿Aún no tienes cuenta?</button>
+												</div>
+
+												<div class="form-group">
+													<button type="button" class="btn btn-outline-info btn-block">Has olvidado tu contraseña</button>
+												</div>
+
+												<span style="color: blue; display: block; text-align: center; cursor: pointer;" data-h5-title="Soy un profesional" data-toggle="tab" data-target="#profesional">Soy un profesional</span>
+
+											</form>
+
+						      			</div>
+						      			<div class="tab-pane fade" id="register">
+						      				
+						      				<form class="form" [formGroup]="validations_form2" (ngSubmit)="registerUser(validations_form2.value)">
+
+							      				<div class="form-group">
+										        	<label>Nombre</label>
+										        	<div class="input-group mb-3">
+													  <div class="input-group-prepend">
+													    <span class="input-group-text" id="r_basic-addon0"><i class="fa fa-user"></i></span>
+													  </div>
+													  <input type="text" formControlName="name" class="form-control" placeholder="Nombre *" aria-label="Nombre" aria-describedby="r_basic-addon0">
+													</div>
+													<div class="validation-errors">
+											          <ng-container *ngFor="let validation of validation_messages2.name">
+											            <div class="error-message" *ngIf="validations_form2.get('name').hasError(validation.type) && (validations_form2.get('name').dirty || validations_form2.get('name').touched)">
+											              {{ validation.message }}
+											            </div>
+											          </ng-container>
+											        </div>
+										        </div>
+
+							      				<div class="form-group">
+										        	<label>Email</label>
+										        	<div class="input-group mb-3">
+													  <div class="input-group-prepend">
+													    <span class="input-group-text" id="r_basic-addon1"><i class="fa fa-envelope"></i></span>
+													  </div>
+													  <input type="email" formControlName="email" class="form-control" placeholder="E-mail *" aria-label="E-mail" aria-describedby="r_basic-addon1">
+													</div>
+													<div class="validation-errors">
+											          <ng-container *ngFor="let validation of validation_messages2.email">
+											            <div class="error-message" *ngIf="validations_form2.get('email').hasError(validation.type) && (validations_form2.get('email').dirty || validations_form2.get('email').touched)">
+											              {{ validation.message }}
+											            </div>
+											          </ng-container>
+											        </div>
+										        </div>
+
+										        <div class="form-group">
+										        	<label>Contraseña</label>
+										        	<div class="input-group mb-3">
+													  <div class="input-group-prepend">
+													    <span class="input-group-text" id="r_basic-addon2"><i class="fa fa-lock"></i></span>
+													  </div>
+													  <input type="password" formControlName="password" class="form-control" placeholder="Contraseña *" aria-label="Contraseña" aria-describedby="r_basic-addon2">
+													</div>
+													<div class="validation-errors">
+											          <ng-container *ngFor="let validation of validation_messages2.password">
+											            <div class="error-message" *ngIf="validations_form2.get('password').hasError(validation.type) && (validations_form2.get('password').dirty || validations_form2.get('password').touched)">
+											              {{ validation.message }}
+											            </div>
+											          </ng-container>
+											        </div>
+										        </div>
+
+										        <div class="custom-control custom-checkbox">
+												  <input type="checkbox" class="custom-control-input" id="acceptCheck" formControlName="conditions" required>
+												  <label class="custom-control-label" for="acceptCheck">Acepto las <a href="#">condiciones de uso</a> y la <a href="#">Información básica de Protección de Datos</a></label>
+												</div>
+												<div class="validation-errors">
+										          <ng-container *ngFor="let validation of validation_messages2.conditions">
+										            <div class="error-message" *ngIf="validations_form2.get('conditions').hasError(validation.type) && (validations_form2.get('conditions').dirty || validations_form2.get('conditions').touched)">
+										              {{ validation.message }}
+										            </div>
+										          </ng-container>
+										        </div>
+
+										        <div *ngIf="errorMessage2">
+										        	<div class="alert alert-danger" role="alert">
+													  {{errorMessage2}}
+													</div>
+										        </div>
+
+												<br>
+
+												<div class="form-group">
+													<button type="submit" [disabled]="!validations_form2.valid" class="btn btn-warning btn-block">Crear cuenta</button>
+												</div>
+
+												<div class="form-group">
+													<button type="button" class="btn btn-outline-secondary btn-block" data-h5-title="Accede con tu cuenta" data-toggle="tab" data-target="#login">¿Ya tienes una cuenta?</button>
+												</div>
+
+											</form>
+
+						      			</div>
+
+						      			<div class="tab-pane fade" id="profesional">
+						      				
+						      				<form class="form" [formGroup]="validations_form3" (ngSubmit)="registerProfessional(validations_form3.value)">
+
+							      				<div class="form-group">
+										        	<label>Nombre</label>
+										        	<div class="input-group mb-3">
+													  <div class="input-group-prepend">
+													    <span class="input-group-text" id="r_basic-addon0"><i class="fa fa-user"></i></span>
+													  </div>
+													  <input type="text" formControlName="name" class="form-control" placeholder="Nombre *" aria-label="Nombre" aria-describedby="r_basic-addon0">
+													</div>
+													<div class="validation-errors">
+											          <ng-container *ngFor="let validation of validation_messages3.name">
+											            <div class="error-message" *ngIf="validations_form3.get('name').hasError(validation.type) && (validations_form3.get('name').dirty || validations_form3.get('name').touched)">
+											              {{ validation.message }}
+											            </div>
+											          </ng-container>
+											        </div>
+										        </div>
+
+										        <div class="form-group">
+										        	<label>Teléfono</label>
+										        	<div class="input-group mb-3">
+													  <div class="input-group-prepend">
+													    <span class="input-group-text" id="p_basic-addon0-1"><i class="fa fa-phone"></i></span>
+													  </div>
+													  <input type="phone" formControlName="phone" class="form-control" placeholder="Teléfono *" aria-label="Teléfono" aria-describedby="p_basic-addon0-1">
+													</div>
+													<div class="validation-errors">
+											          <ng-container *ngFor="let validation of validation_messages3.phone">
+											            <div class="error-message" *ngIf="validations_form3.get('phone').hasError(validation.type) && (validations_form3.get('phone').dirty || validations_form3.get('phone').touched)">
+											              {{ validation.message }}
+											            </div>
+											          </ng-container>
+											        </div>
+										        </div>
+
+							      				<div class="form-group">
+										        	<label>Email</label>
+										        	<div class="input-group mb-3">
+													  <div class="input-group-prepend">
+													    <span class="input-group-text" id="p_basic-addon1"><i class="fa fa-envelope"></i></span>
+													  </div>
+													  <input type="email" formControlName="email" class="form-control" placeholder="E-mail *" aria-label="E-mail" aria-describedby="p_basic-addon1">
+													</div>
+													<div class="validation-errors">
+											          <ng-container *ngFor="let validation of validation_messages3.email">
+											            <div class="error-message" *ngIf="validations_form3.get('email').hasError(validation.type) && (validations_form3.get('email').dirty || validations_form3.get('email').touched)">
+											              {{ validation.message }}
+											            </div>
+											          </ng-container>
+											        </div>
+										        </div>
+
+										        <div class="form-group">
+										        	<label>Contraseña</label>
+										        	<div class="input-group mb-3">
+													  <div class="input-group-prepend">
+													    <span class="input-group-text" id="p_basic-addon2"><i class="fa fa-lock"></i></span>
+													  </div>
+													  <input type="password" formControlName="password" class="form-control" placeholder="Contraseña *" aria-label="Contraseña" aria-describedby="p_basic-addon2">
+													</div>
+													<div class="validation-errors">
+											          <ng-container *ngFor="let validation of validation_messages3.password">
+											            <div class="error-message" *ngIf="validations_form3.get('password').hasError(validation.type) && (validations_form3.get('password').dirty || validations_form3.get('password').touched)">
+											              {{ validation.message }}
+											            </div>
+											          </ng-container>
+											        </div>
+										        </div>
+
+										        <div class="form-group">
+										        	<label>Stock de vehículos</label>
+										        	<div class="mb-3">
+													  <label><input type="radio" formControlName="stock" value="1-20"> 1-20 </label> <br>
+													  <label><input type="radio" formControlName="stock" value="20-50"> 20-50 </label> <br>
+													  <label><input type="radio" formControlName="stock" value="50+"> 50+ </label> <br>
+													</div>
+													<div class="validation-errors">
+											          <ng-container *ngFor="let validation of validation_messages3.stock">
+											            <div class="error-message" *ngIf="validations_form3.get('stock').hasError(validation.type) && (validations_form3.get('stock').dirty || validations_form3.get('stock').touched)">
+											              {{ validation.message }}
+											            </div>
+											          </ng-container>
+											        </div>
+										        </div>
+
+										        <div class="custom-control custom-checkbox">
+												  <input type="checkbox" class="custom-control-input" id="acceptCheck2" formControlName="conditions" required>
+												  <label class="custom-control-label" for="acceptCheck2">Acepto las <a href="#">condiciones de uso</a> y la <a href="#">Información básica de Protección de Datos</a></label>
+												</div>
+												<div class="validation-errors">
+										          <ng-container *ngFor="let validation of validation_messages3.conditions">
+										            <div class="error-message" *ngIf="validations_form3.get('conditions').hasError(validation.type) && (validations_form3.get('conditions').dirty || validations_form3.get('conditions').touched)">
+										              {{ validation.message }}
+										            </div>
+										          </ng-container>
+										        </div>
+
+										        <div *ngIf="errorMessage2">
+										        	<div class="alert alert-danger" role="alert">
+													  {{errorMessage2}}
+													</div>
+										        </div>
+
+												<br>
+
+												<div class="form-group">
+													<button type="submit" [disabled]="!validations_form3.valid" class="btn btn-warning btn-block">Crear cuenta</button>
+												</div>
+
+												<div class="form-group">
+													<button type="button" class="btn btn-outline-secondary btn-block" data-h5-title="Accede con tu cuenta" data-toggle="tab" data-target="#login">¿Ya tienes una cuenta?</button>
+												</div>
+
+											</form>
+
+						      			</div>
+
+						      			<div class="tab-pane fade" id="registered">
+						      				<div class="text-center">
+						      					<i class="fa fa-check-circle-o" style="font-size: 78px; color: #333"></i>
+
+						      					<h4>Usuario registrado correctamente! <br> <small> Revisa tu correo. </small></h4>
+						      				</div>
+						      			</div>
+
+						      			<div class="tab-pane fade" id="registered2">
+						      				<div class="text-center">
+						      					<i class="fa fa-check-circle-o" style="font-size: 78px; color: #333"></i>
+
+						      					<h4>Profesional registrado! <br> <small> Nos pondremos en contacto contigo. </small></h4>
+						      				</div>
+						      			</div>
+						      		</div>
+						      	</div>
+
+
+						      </div>
+						      <!-- <div class="modal-footer">
+						        <button type="button" class="btn btn-primary">Save changes</button>
+						        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						      </div> -->
+						    </div>
+						  </div>
+						</div>
+			        	<!-- <a class="nav-link" href="#" [routerLink]="['/mi-perfil']"> <span>Illya Alvarado</span> <div class="profile-circle" style="background-image: url(assets/user.svg)"></div></a> -->
+			        </li>
+			    </ul>
+			  </div>
+			</div>
+		</nav>
+		<!-- /**/ -->
+	<!-- </div> -->
 </div>
-<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2c353a;">
+
+<div id="header-2">
 	<div class="container">
-	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-	    <span class="navbar-toggler-icon"></span>
-	  </button>
-
-	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-	    <ul class="navbar-nav mr-auto">
-	      
-	      <li class="nav-item active" style="text-align: center;">
-	        <a class="nav-link" href="#"> <i class="fa fa-car" style="font-size: 24px; color: #fff"></i> <br> Coches</a>
-	      </li>
-
-	      <li class="nav-item" style="text-align: center;">
-	        <a class="nav-link" href="#"> <i class="fa fa-car" style="font-size: 24px; color: #fff"></i> <br> Furgonetas</a>
-	      </li>
-
-	      <li class="nav-item" style="text-align: center;">
-	        <a class="nav-link" href="#"> <i class="fa fa-car" style="font-size: 24px; color: #fff"></i> <br> Motos</a>
-	      </li>
-
-	    </ul>
-	  </div>
+		<div class="row">
+			<div class="col-sm-12">
+				<ul id="categories" *ngIf="!perfil">
+					<li [routerLink]="['/']"><img src="assets/iconos/car.svg" class="svg-title" alt=""> Coches</li>
+					<li [routerLink]="['/furgonetas']"><img src="assets/iconos/van.svg" class="svg-title" alt=""> Furgonetas</li>
+					<li [routerLink]="['/motos']"><img src="assets/iconos/scooter.svg" class="svg-title" alt=""> Motos</li>
+					<li [routerLink]="['/']"><img src="assets/iconos/caravan.svg" class="svg-title" alt=""> Autocaravanas</li>
+					<li [routerLink]="['/industriales']"><img src="assets/iconos/gas.svg" class="svg-title" alt=""> Más Vehiculos</li>
+					<li [routerLink]="['/repuestos']"><img src="assets/iconos/motor.svg" class="svg-title" alt=""> Repuestos</li>
+					<li [routerLink]="['/profesionales']"><img src="assets/iconos/rent.svg" class="svg-title" alt=""> Profesionales</li>
+					<li [routerLink]="['/']"><img src="assets/iconos/crash.svg" class="svg-title" alt=""> Averiados y Accidentados</li>
+					<li [routerLink]="['/informacion']"><img src="assets/iconos/i.svg" class="svg-title" alt=""> Información</li>
+				</ul>
+				<ul id="options" *ngIf="perfil">
+					<li [routerLink]="['/mi-perfil']"><img src="assets/perfil/user-2.svg" class="svg-title" alt=""> Mi cuenta</li>
+					<li [routerLink]="['/mis-anuncios']"><img src="assets/perfil/speaker.svg" class="svg-title" alt=""> Mis anuncios</li>
+					<li [routerLink]="['/mi-perfil/mensajes']" class="msg-router"><img src="assets/perfil/chat.svg" class="svg-title" alt="">
+						<span *ngIf="newmessages" class="circle-new-message"></span>
+						Mensajes
+					</li>
+					<li [routerLink]="['/favoritos']"><img src="assets/perfil/heart.svg" class="svg-title" alt=""> Favoritos</li>
+					<li><img src="assets/perfil/star.svg" class="svg-title" alt=""> Destacados</li>
+					<li><img src="assets/perfil/bill.svg" class="svg-title" alt=""> Facturas</li>
+					<li [routerLink]="['/ayuda']"><img src="assets/perfil/question.svg" class="svg-title" alt=""> Ayuda</li>
+				</ul>
+			</div>
+		</div>
 	</div>
-</nav>
-
-
-	
+</div>

@@ -1,0 +1,24 @@
+<div class="row">
+	<div class="col-9">
+		<div class="over">
+			<div class="row">
+      		  	<div style="padding:0" class="col-6 text-center line"><i class="fa fa-eye"></i> {{v?.views || 0}} </div>
+				<div style="padding:0" class="col-6 text-center"><i class="fa fa-heart-o"></i> {{v?.favorites || 0}} </div>
+			</div>
+		</div>
+	</div>
+	<div class="col-3" style="position: relative;">
+		<div class="share-button">
+			<i class="fa fa-share"></i>
+
+			<div class="share-panel">
+				<!-- <img src="assets/facebook.svg" alt="">
+				<img src="assets/email.svg" alt="">
+				<img src="assets/whatsapp.svg" alt=""> -->
+				<share-button button="facebook"></share-button>
+				<share-button button="twitter"></share-button>
+				<share-button button="whatsapp"></share-button>
+			</div>
+		</div>
+	</div>
+</div>

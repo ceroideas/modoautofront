@@ -1,0 +1,880 @@
+<app-header></app-header>
+
+<div class="main-wrapper">
+	
+	<div class="container">
+		
+		<div class="row">
+			<div class="col-md-3">
+				<img src="assets/logo.png" [routerLink]="['/']" class="main-logo" alt="">
+			</div>
+			<div class="col-md-9">
+			</div>
+		</div>
+			<!-- /**/ -->
+
+		<div class="row mt-20">
+			<div class="col-md-3">
+				<img *ngIf="banner" (click)="api.openLink(banner.link)" [src]="banner.file" style="width: 100%; cursor: pointer;" alt="">
+			</div>
+
+			<div class="col-md-6" *ngIf="!user" style="text-align: center;">
+				<i class="fa fa-lock" style="font-size: 78px;"></i>
+
+				<h3>Para poder anunciar debes estar registrado</h3>
+			</div>
+			<div class="col-md-6" *ngIf="user">
+
+				<div *ngIf="activatedRoute.snapshot.paramMap.get('id')">
+					<h2>Edita tu anuncio</h2>
+				</div>
+				<div *ngIf="!activatedRoute.snapshot.paramMap.get('id')">
+					
+					<h2>¿Qué quieres anunciar?</h2>
+
+					<div class="row">
+						<div class="col-sm-12">
+
+							<div class="categories-select">
+								<input type="radio" name="category" [disabled]="loadingFeatures" id="category-1" value="Coches" [(ngModel)]="category" (click)="getFeatures('Coches')">
+								<label for="category-1">
+									<img src="assets/iconos/car.svg" class="svg-title" alt=""> Coches
+								</label>
+							</div>
+
+							<div class="categories-select">
+								<!-- <input type="radio" name="category" [disabled]="loadingFeatures" id="category-12" value="Furgonetas" [(ngModel)]="category" (click)="getFeatures('Furgonetas')"> -->
+								<label for="category-12" style="color: gray; opacity: .5">
+									<img src="assets/iconos/van.svg" class="svg-title" alt=""> Furgonetas
+								</label>
+							</div>
+
+							<div class="categories-select">
+								<!-- <input type="radio" name="category" [disabled]="loadingFeatures" id="category-2" value="Motos" [(ngModel)]="category" (click)="getFeatures('Motos')"> -->
+								<label for="category-2" style="color: gray; opacity: .5">
+									<img src="assets/iconos/scooter.svg" class="svg-title" alt=""> Motos
+								</label>
+							</div>
+
+							<div class="categories-select">
+								<input type="radio" name="category" [disabled]="loadingFeatures" id="category-3" value="Repuestos" [(ngModel)]="category" (click)="getFeatures('Repuestos')">
+								<label for="category-3">
+									<img src="assets/iconos/motor.svg" class="svg-title" alt=""> Repuestos
+								</label>
+							</div>
+
+							<!-- <div class="categories-select">
+								<input type="radio" name="category" [disabled]="loadingFeatures" id="category-2" value="2" disabled [(ngModel)]="category" (click)="getFeatures(2)">
+								<label for="category-2">
+									<img src="assets/iconos/van.svg" class="svg-title" alt=""> Furgonetas
+								</label>
+							</div> -->
+
+							<div style="clear: both;"></div>
+							<!-- <select2 class="custom-select2" [data]="categories"
+								
+								displaySearchStatus="always"
+							    (update)="_update($event)">
+							</select2> -->
+
+							<hr>
+
+							<h3>Añade fotos a tu anuncio</h3>
+
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+
+						<script>
+							alert('hola');
+						</script>
+
+						<div id="sortable">
+							<div style="width: 33.33333%; height: 180px; padding: 5px;float:left; margin-bottom: 8px;" *ngFor="let f of images; let i = index" class="images-items" [attr.data-index]="i">
+							<!-- <div class="col-sm-4"> -->
+								<div style="border: 1px solid #bebebe; height: 180px; border-radius: 2px; margin-bottom: 8px">
+									<div [ngStyle]="{'background-image':'url('+f.url+')','height': 'calc(100% - 36px)'}" class="image-preview">
+										
+									</div>
+									<div style="height: 36px; border-top: 2px solid silver; padding: 8px 3px;">
+										{{i+1}}. Imagen
+										<span style="float: right; font-size: 16px; color: cornflowerblue; cursor: pointer;" (click)="onRemove(i)">
+											<i class="fa fa-trash"></i> <span style="font-size: 12px"> Eliminar</span>
+										</span>
+									</div>
+								</div>
+								
+							</div>
+
+							<div style="clear: both;"></div>
+						</div>
+
+						<div style="width: 33.33333%; height: 180px; padding: 5px;">
+							<ngx-dropzone (change)="onSelect($event)">
+							    <ngx-dropzone-label>Arrastra tus fotos para subirlas!</ngx-dropzone-label>
+							    <!-- <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" [removable]="false" (removed)="onRemove(f)" [file]="f">
+							        <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
+							    </ngx-dropzone-image-preview> -->
+							</ngx-dropzone>
+						</div>
+
+
+						<div class="row">
+						</div>
+
+						<h3>Añade un video a tu anuncio (link del video de youtube, opcional)</h3>
+
+						<input type="text" class="form-control" placeholder="Link de Youtube" [(ngModel)]="video">
+
+						<hr>
+
+						<div *ngIf="category">
+
+							<h3>Provincia</h3>
+						
+							<select2 class="custom-select2" [data]="provinces"
+								
+								displaySearchStatus="always"
+								multiple_
+								[(ngModel)]="province"
+							    (update)="_update($event)">
+							</select2>
+
+							<hr>
+							
+
+							<div *ngIf="allBrands.length > 0">
+
+								<h3>Marca</h3>
+								<select2 class="custom-select2" [data]="brands"
+									
+									[disabled]="!category"
+									displaySearchStatus="always"
+								    [(ngModel)]="brand">
+								</select2>
+								<!-- <select2 class="custom-select2" [data]="fuels"
+									
+									displaySearchStatus="always"
+								    (update)="_update($event)">
+								</select2> -->
+
+								<h3>Año</h3>
+								<select2 class="custom-select2" [data]="years"
+									
+									[disabled]="!brand"
+									displaySearchStatus="always"
+								    [(ngModel)]="year"
+								    (update)="firstLoad()"
+								    >
+								</select2>
+								
+								<h3>Modelo</h3>
+								<select2 class="custom-select2" [data]="models"
+									
+									[disabled]="!year"
+									displaySearchStatus="always"
+								    (update)="loadVersions()"
+								    [(ngModel)]="model">
+								</select2>
+
+								<div *ngIf="_trim?.length > 0">
+									<h3>Ajuste</h3>
+									<select2 class="custom-select2" [data]="trims"
+										[value]="version"
+										[disabled]="!model"
+										displaySearchStatus="always"
+									    (update)="_update($event)"
+									    [(ngModel)]="version">
+									</select2>
+								</div>
+									
+								<div *ngIf="_version?.length > 0">
+									<h3>Versión</h3>
+									<select2 class="custom-select2" [data]="versions"
+										[value]="version"
+										[disabled]="!model"
+										displaySearchStatus="always"
+									    (update)="_update($event)"
+									    [(ngModel)]="version">
+									</select2>
+								</div>
+
+								<div *ngIf="_fuel?.length > 0">
+									<h3>Combustible</h3>
+
+									<select2 class="custom-select2" [data]="_fuel[0].options | select2Data:'Combustible'"
+										[disabled]="!year"
+										displaySearchStatus="always"
+									    [(ngModel)]="fuel">
+									</select2>
+
+									<div class="radio-group">
+
+										<!-- <span *ngFor="let f of _fuel[0].options">
+											<input (change)="firstLoad()" type="radio" name="fuel" [value]="f.value" [id]="'f-'+f.value" [disabled]="!year" [(ngModel)]="fuel">
+											<label class="radio-inline" [for]="'f-'+f.value">
+												{{f.value}}
+											</label>
+										</span> -->
+
+										<!-- <input type="radio" name="fuel" value="Diesel" id="f-Diesel" [disabled]="!year" [(ngModel)]="fuel" (change)="loadModels()">
+										<label class="radio-inline" for="f-Diesel">
+											Diesel
+										</label>
+
+										<input type="radio" name="fuel" value="Otro" id="f-Otro" [disabled]="!year" [(ngModel)]="fuel" (change)="loadModels()">
+										<label class="radio-inline" for="f-Otro">
+											Otro
+										</label> -->
+									</div>
+								</div>
+
+								<div *ngIf="_bodywork?.length > 0">
+									<h3>Carrocería</h3>
+									<select2 class="custom-select2" [data]="bodyworks"
+										
+										[disabled]="!model"
+										displaySearchStatus="always"
+									    [(ngModel)]="bodywork">
+									</select2>
+								</div>
+								
+								<div *ngIf="_gearbox?.length > 0">
+									<h3>Tipo de cambio</h3>
+
+									<select2 class="custom-select2" [data]="_gearbox[0].options | select2Data:'Caja de cambios'"
+										[disabled]="!version"
+										displaySearchStatus="always"
+									    (update)="_update($event)"
+									    [(ngModel)]="gearbox">
+									</select2>
+									<div class="radio-group">
+										<!-- <span *ngFor="let c of _gearbox[0].options">
+											<input type="radio" name="gearbox" [value]="c.value" [id]="'c-'+c.value" [disabled]="!version" [(ngModel)]="gearbox">
+											<label class="radio-inline" [for]="'c-'+c.value">
+												{{c.value}}
+											</label>
+										</span> -->
+										<!-- <input type="radio" name="gearbox" value="Manual" id="c-Manual" [disabled]="!version" [(ngModel)]="gearbox">
+										<label class="radio-inline" for="c-Manual">
+											Manual
+										</label> -->
+									</div>
+
+								</div>
+
+								<hr>
+
+								<div *ngIf="_kilometers?.length > 0">
+									<h3>Kilómetros</h3>
+									<input type="number" class="form-control" placeholder="Km" [(ngModel)]="kilometers">
+								</div>
+
+								<br>
+
+								<div *ngIf="_color?.length > 0">
+									<h3>Color exterior</h3>
+									<select2 class="custom-select2" [data]="colors"
+										
+										[(ngModel)]="color"
+										displaySearchStatus="always"
+									    (update)="_update($event)">
+									</select2>
+								</div>
+
+							</div>
+
+							<div *ngIf="sale_type == 2">
+								
+								<div *ngFor="let f of features">
+									
+									<div *ngIf="f.type_input == 'select'">
+										<h3>{{f.title}}</h3>
+										<select2 class="custom-select2" [data]="f.options | select2Data:f.title"
+											[(ngModel)]="_features[f.input_name]"
+											displaySearchStatus="always"
+										    (update)="_update($event)">
+										</select2>
+									</div>
+									<div *ngIf="f.type_input == 'text'">
+										<h3>{{f.title}}</h3>
+										<input type="text" class="form-control" [(ngModel)]="_features[f.input_name]">
+									</div>
+
+								</div>
+
+							</div>
+
+							<!-- - -->
+
+							<h3>Precio</h3>
+							<input type="number" class="form-control" placeholder="€" [(ngModel)]="price">
+							<br>
+
+							<div *ngIf="user.role == 3">
+								
+
+								<h3>Precio para profesionales *</h3>
+								<input type="number" class="form-control" placeholder="€" [(ngModel)]="price_professional">
+								<small><i>* Éste precio solo se mostrará a perfiles profesionales</i></small>
+								<br>
+
+								<h3>Mostrar precio financiado</h3>
+								<input type="number" class="form-control" placeholder="€" [(ngModel)]="price_financed">
+								<br>
+							</div>
+
+
+							<div class="custom-control custom-checkbox">
+							  <input type="checkbox" class="custom-control-input" id="customCheck2" [(ngModel)]="guarantee">
+							  <label class="custom-control-label" for="customCheck2">Con garantía</label>
+							</div>
+
+							<div *ngIf="guarantee">
+								<h3>Tiempo de garantía</h3>
+								<input type="number" class="form-control" placeholder="Meses" [(ngModel)]="guarantee_time">
+								<br>
+							</div>
+							<br>
+
+							<div class="custom-control custom-checkbox">
+							  <input type="checkbox" class="custom-control-input" id="customCheck3" [(ngModel)]="iva">
+							  <label class="custom-control-label" for="customCheck3">Incluye iva deducible</label>
+							</div>
+
+							<hr>
+
+							<div *ngIf="sale_type != 2">
+								<h3>Estado del vehículo</h3>
+
+								<div class="custom-control custom-radio">
+								  <input type="radio" class="custom-control-input" id="nuevo" value="0" [(ngModel)]="status">
+								  <label class="custom-control-label" for="nuevo">Nuevo</label>
+
+								</div>
+
+								<div class="custom-control custom-radio">
+								  <input type="radio" class="custom-control-input" id="usado" value="1" [(ngModel)]="status">
+								  <label class="custom-control-label" for="usado">Usado</label>
+								</div>
+								
+								<div *ngIf="status == 1">
+									<hr>
+									<div class="custom-control custom-checkbox">
+									  <input type="checkbox" class="custom-control-input" id="averiado" [(ngModel)]="averiado">
+									  <label class="custom-control-label" for="averiado">Mi vehículo está averiado o accidentado</label>
+									</div>
+								</div>
+
+								<hr>
+							</div>
+
+							<div *ngIf="category == 'Coches'">
+								<h3 style="font-weight: bold;">Equipamiento</h3>
+
+								<h3></h3>
+
+
+	<h3 style="font-weight: bold;">Airbag</h3>
+		<div class="row">
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Airbag acompañante'" value="Airbag acompañante"> Airbag acompañante</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Airbag trasero'" value="Airbag trasero"> Airbag trasero</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Airbag del conductor'" value="Airbag del conductor"> Airbag del conductor</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Airbags laterales'" value="Airbags laterales"> Airbags laterales</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Airbag para la cabeza'" value="Airbag para la cabeza"> Airbag para la cabeza</label>
+			</div>
+		</div>
+
+
+	<h3 style="font-weight: bold;">Aire Acondicionado</h3>
+		<div class="row">
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Aire Acondicionado'" value="Aire Acondicionado"> Aire Acondicionado</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Climatizador automático, 3 zonas'" value="Climatizador automático, 3 zonas"> Climatizador automático, 3 zonas</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Climatizador automático'" value="Climatizador automático"> Climatizador automático</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Climatizador automático, 4 zonas'" value="Climatizador automático, 4 zonas"> Climatizador automático, 4 zonas</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Climatizador automático, 2 zonas'" value="Climatizador automático, 2 zonas"> Climatizador automático, 2 zonas</label>
+			</div>
+		</div>
+
+
+	<h3 style="font-weight: bold;">Asientos</h3>
+		<div class="row">
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Ajuste lumbar'" value="Ajuste lumbar"> Ajuste lumbar</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Asientos con masaje'" value="Asientos con masaje"> Asientos con masaje</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Asiento del copiloto abatible'" value="Asiento del copiloto abatible"> Asiento del copiloto abatible</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Asientos deportivos'" value="Asientos deportivos"> Asientos deportivos</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Asiento trasero partido'" value="Asiento trasero partido"> Asiento trasero partido</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Asientos eléctricos'" value="Asientos eléctricos"> Asientos eléctricos</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Asientos calef.'" value="Asientos calef."> Asientos calef.</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Ventilación del asiento'" value="Ventilación del asiento"> Ventilación del asiento</label>
+			</div>
+		</div>
+
+
+	<h3 style="font-weight: bold;">Asistente de aparcamiento</h3>
+		<div class="row">
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'360° cámara'" value="360° cámara"> 360° cámara</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Sensor de aparcamiento trasero'" value="Sensor de aparcamiento trasero"> Sensor de aparcamiento trasero</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Cámara de aparcamiento'" value="Cámara de aparcamiento"> Cámara de aparcamiento</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Sistema de aparcamiento automático'" value="Sistema de aparcamiento automático"> Sistema de aparcamiento automático</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Sensor de aparcamiento delantero'" value="Sensor de aparcamiento delantero"> Sensor de aparcamiento delantero</label>
+			</div>
+		</div>
+
+
+	<h3 style="font-weight: bold;">Cierre centralizado</h3>
+		<div class="row">
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Apertura y arranque sin llave'" value="Apertura y arranque sin llave"> Apertura y arranque sin llave</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Cierre centralizado con mando a distancia'" value="Cierre centralizado con mando a distancia"> Cierre centralizado con mando a distancia</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Cierre centralizado'" value="Cierre centralizado"> Cierre centralizado</label>
+			</div>
+		</div>
+
+
+	<h3 style="font-weight: bold;">Comodidad</h3>
+		<div class="row">
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Cambio de levas en volante'" value="Cambio de levas en volante"> Cambio de levas en volante</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Reposabrazos'" value="Reposabrazos"> Reposabrazos</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Dirección asistida'" value="Dirección asistida"> Dirección asistida</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Retrovisores laterales eléctricos'" value="Retrovisores laterales eléctricos"> Retrovisores laterales eléctricos</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Elevalunas eléctrico'" value="Elevalunas eléctrico"> Elevalunas eléctrico</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Sensor de lluvia'" value="Sensor de lluvia"> Sensor de lluvia</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Pantalla frontal'" value="Pantalla frontal"> Pantalla frontal</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Sensor de luces'" value="Sensor de luces"> Sensor de luces</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Parabrisas delantero calefactable'" value="Parabrisas delantero calefactable"> Parabrisas delantero calefactable</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Start/Stop automático'" value="Start/Stop automático"> Start/Stop automático</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Portón trasero électrique'" value="Portón trasero électrique"> Portón trasero électrique</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Suspensión de aire'" value="Suspensión de aire"> Suspensión de aire</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Precalentador'" value="Precalentador"> Precalentador</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Techo panorámico'" value="Techo panorámico"> Techo panorámico</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Puertas corredizas'" value="Puertas corredizas"> Puertas corredizas</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Techo solar'" value="Techo solar"> Techo solar</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Puertas corredizas derecho'" value="Puertas corredizas derecho"> Puertas corredizas derecho</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Volante calefactable'" value="Volante calefactable"> Volante calefactable</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Puertas corredizas izquierda'" value="Puertas corredizas izquierda"> Puertas corredizas izquierda</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Volante de cuero'" value="Volante de cuero"> Volante de cuero</label>
+			</div>
+		</div>
+
+
+	<h3 style="font-weight: bold;">Control de velocidad</h3>
+		<div class="row">
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Control de distancia'" value="Control de distancia"> Control de distancia</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Control de velocidad'" value="Control de velocidad"> Control de velocidad</label>
+			</div>
+		</div>
+
+
+	<h3 style="font-weight: bold;">Entretenimiento</h3>
+		<div class="row">
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Android Auto'" value="Android Auto"> Android Auto</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Punto de conexión WiFi / WLAN'" value="Punto de conexión WiFi / WLAN"> Punto de conexión WiFi / WLAN</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Apple CarPlay'" value="Apple CarPlay"> Apple CarPlay</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Radio digital'" value="Radio digital"> Radio digital</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Carga inalámbrica para smartphones'" value="Carga inalámbrica para smartphones"> Carga inalámbrica para smartphones</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Salpicadero completamente digital'" value="Salpicadero completamente digital"> Salpicadero completamente digital</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Control por voz'" value="Control por voz"> Control por voz</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Sistema de sonido'" value="Sistema de sonido"> Sistema de sonido</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Función de TV'" value="Función de TV"> Función de TV</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Streaming de música integrado'" value="Streaming de música integrado"> Streaming de música integrado</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Pantalla táctil'" value="Pantalla táctil"> Pantalla táctil</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'USB'" value="USB"> USB</label>
+			</div>
+		</div>
+
+
+	<h3 style="font-weight: bold;">Entretenimiento / Medios</h3>
+		<div class="row">
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Bluetooth'" value="Bluetooth"> Bluetooth</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Navegador'" value="Navegador"> Navegador</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'CD'" value="CD"> CD</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Ordenador'" value="Ordenador"> Ordenador</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'MP3'" value="MP3"> MP3</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Radio'" value="Radio"> Radio</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Manos libres'" value="Manos libres"> Manos libres</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Volante multifunción'" value="Volante multifunción"> Volante multifunción</label>
+			</div>
+		</div>
+
+
+	<h3 style="font-weight: bold;">Extras</h3>
+		<div class="row">
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Adaptado discapacitados'" value="Adaptado discapacitados"> Adaptado discapacitados</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Neumáticos de invierno'" value="Neumáticos de invierno"> Neumáticos de invierno</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Autonomía extendida'" value="Autonomía extendida"> Autonomía extendida</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Neumáticos de verano'" value="Neumáticos de verano"> Neumáticos de verano</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Baca'" value="Baca"> Baca</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Neumáticos para todo el año'" value="Neumáticos para todo el año"> Neumáticos para todo el año</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Bola de remolque'" value="Bola de remolque"> Bola de remolque</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Paquete Sport'" value="Paquete Sport"> Paquete Sport</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Catalizador'" value="Catalizador"> Catalizador</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Paquete para fumadores'" value="Paquete para fumadores"> Paquete para fumadores</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Conversión en biodiésel'" value="Conversión en biodiésel"> Conversión en biodiésel</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Paquete para invierno'" value="Paquete para invierno"> Paquete para invierno</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Cortavientos'" value="Cortavientos"> Cortavientos</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Porta esquís'" value="Porta esquís"> Porta esquís</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Deflector'" value="Deflector"> Deflector</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Retrovisor interior con oscurecimiento automático'" value="Retrovisor interior con oscurecimiento automático"> Retrovisor interior con oscurecimiento automático</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Freno de estacionamiento electrónico'" value="Freno de estacionamiento electrónico"> Freno de estacionamiento electrónico</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Rueda de emergencia'" value="Rueda de emergencia"> Rueda de emergencia</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Iluminación ambiental'" value="Iluminación ambiental"> Iluminación ambiental</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Rueda de repuesto'" value="Rueda de repuesto"> Rueda de repuesto</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Indicado para E10'" value="Indicado para E10"> Indicado para E10</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Separación del maletero'" value="Separación del maletero"> Separación del maletero</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Kit de reparación de averías'" value="Kit de reparación de averías"> Kit de reparación de averías</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Sistema de lavado de faros'" value="Sistema de lavado de faros"> Sistema de lavado de faros</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Llantas de acero'" value="Llantas de acero"> Llantas de acero</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Suspensión deportiva'" value="Suspensión deportiva"> Suspensión deportiva</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Llantas de aleación'" value="Llantas de aleación"> Llantas de aleación</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Tunning'" value="Tunning"> Tunning</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Manejo del lado derecho'" value="Manejo del lado derecho"> Manejo del lado derecho</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Ventanas tintadas'" value="Ventanas tintadas"> Ventanas tintadas</label>
+			</div>
+		</div>
+
+
+	<h3 style="font-weight: bold;">Luz</h3>
+		<div class="row">
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Faros LED íntegros'" value="Faros LED íntegros"> Faros LED íntegros</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Luces de marcha diurna LED'" value="Luces de marcha diurna LED"> Luces de marcha diurna LED</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Faros antiniebla'" value="Faros antiniebla"> Faros antiniebla</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Luces láser'" value="Luces láser"> Luces láser</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Faros de LED'" value="Faros de LED"> Faros de LED</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Luz direccional'" value="Luz direccional"> Luz direccional</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Faros de xenon'" value="Faros de xenon"> Faros de xenon</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Luz diurna'" value="Luz diurna"> Luz diurna</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Faros delanteros bi-xenon'" value="Faros delanteros bi-xenon"> Faros delanteros bi-xenon</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Sensor de luces'" value="Sensor de luces"> Sensor de luces</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Luces de carretera antideslumbrantes'" value="Luces de carretera antideslumbrantes"> Luces de carretera antideslumbrantes</label>
+			</div>
+		</div>
+
+
+	<h3 style="font-weight: bold;">Seguridad</h3>
+		<div class="row">
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'ABS'" value="ABS"> ABS</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'ISOFIX'" value="ISOFIX"> ISOFIX</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Alarma'" value="Alarma"> Alarma</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Inmovilizador'" value="Inmovilizador"> Inmovilizador</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Control de tracción'" value="Control de tracción"> Control de tracción</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Sistema de detección de fatiga'" value="Sistema de detección de fatiga"> Sistema de detección de fatiga</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'ESP'" value="ESP"> ESP</label>
+			</div>
+		</div>
+
+
+	<h3 style="font-weight: bold;">Sistemas de asistencia</h3>
+		<div class="row">
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Alerta cambio de carril'" value="Alerta cambio de carril"> Alerta cambio de carril</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Reconocimiento de señales de tráfico'" value="Reconocimiento de señales de tráfico"> Reconocimiento de señales de tráfico</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Asistente al arranque en pendient'" value="Asistente al arranque en pendient"> Asistente al arranque en pendient</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Sistema de aviso de la distancia'" value="Sistema de aviso de la distancia"> Sistema de aviso de la distancia</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Asistente al frenado de emergencia'" value="Asistente al frenado de emergencia"> Asistente al frenado de emergencia</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Sistema de limitación de la velocidad'" value="Sistema de limitación de la velocidad"> Sistema de limitación de la velocidad</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Asistente de luz de carretera'" value="Asistente de luz de carretera"> Asistente de luz de carretera</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Testigo de ángulo muerto'" value="Testigo de ángulo muerto"> Testigo de ángulo muerto</label>
+			</div>
+			<div class="col-sm-6">
+				<label> <input type="checkbox" class="equipment" [checked]="equipments | equipments:'Asistente de visión nocturna'" value="Asistente de visión nocturna"> Asistente de visión nocturna</label>
+			</div>
+		</div>
+							</div>
+
+							<h3>¿Quieres indicar algo más?</h3>
+
+							<!-- <textarea cols="30" rows="4" class="form-control" [(ngModel)]="description" placeholder="Añade más información sobre el estado de tu vehiculo!"></textarea> -->
+
+							<ckeditor [editor]="Editor" [(ngModel)]="description"
+							[config]="{ placeholder: 'Añade más información sobre el estado de tu vehiculo!' }"></ckeditor>
+
+							<!-- - -->
+						</div>
+
+
+
+					</div>
+				</div>
+
+
+
+				<div class="mt-30">
+					<!--  -->
+
+					<br>
+					<br>
+
+					<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
+
+					<div class="row">
+						<div class="col-md-6">
+							<button *ngIf="category && !activatedRoute.snapshot.paramMap.get('id')" [disabled]="(sale_type == 1 ? !version : false) || !price" (click)="publish()" class="btn btn-lg btn-secondary" style="color: #e9e9e9; padding: 10px 40px; font-size: 14px;background-color:#249827;border-color:#249827;">Publicar <i class="fa fa-check"></i></button>
+
+							<button *ngIf="category && activatedRoute.snapshot.paramMap.get('id')" [disabled]="(sale_type == 1 ? !version : false) || !price" (click)="update()" class="btn btn-lg btn-secondary" style="color: #e9e9e9; padding: 10px 40px; font-size: 14px;background-color:#249827;border-color:#249827;">Actualizar <i class="fa fa-check"></i></button>
+
+							<div *ngIf="activatedRoute.snapshot.paramMap.get('id')">
+							</div>
+						</div>
+
+					</div>
+
+					<br>
+					<br>
+
+					<!-- <img src="assets/banner.jpg" style="width: 100%;" alt=""> -->
+
+					<app-banner _client="ca-pub-0443011292983797" _slot="8184819393" _format="auto" _style="display:block"></app-banner>
+				</div>
+				<!-- <div class="tab-content" id="pills-tabContent">
+				  <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">...</div>
+				  <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">...</div>
+				  <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div>
+				</div> -->
+			</div>
+			<div class="col-md-3">
+				<img *ngIf="banner1" (click)="api.openLink(banner1.link)" [src]="banner1.file" style="width: 100%; cursor: pointer;" alt="">
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+<app-footer></app-footer>

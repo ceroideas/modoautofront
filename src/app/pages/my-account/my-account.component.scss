@@ -1,0 +1,31 @@
+.card-detail {
+	line-height: 30px;
+	font-size: 16px;
+	min-height: 226px;
+	span {
+		cursor: pointer;
+	}
+}
+
+.svg-profile {
+	width: 24px; margin-right: 10px; position: relative; top: -1px;
+}
+
+.profile-pic {
+	width: 120px;
+	height: 120px;
+	border-radius: 60px;
+	background-color: #f0f0f0;
+	margin-bottom: -70px;
+	cursor: pointer;
+	border:8px solid #fff;
+	position: relative;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+}
+
+.userName {
+	margin-left: 140px;
+	font-size: 18px;
+}

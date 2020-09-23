@@ -1,0 +1,146 @@
+<app-header></app-header>
+
+<div class="main-wrapper">
+	
+	<div class="container">
+		
+		<div class="row">
+			<div class="col-md-3">
+				<img src="assets/logo.png" [routerLink]="['/']" class="main-logo" alt="">
+
+				<br>
+
+				<img *ngIf="banner" [src]="banner.file" style="width: 100%;" alt="">
+			</div>
+
+			<div class="col-md-9">
+				
+				<h2 style="margin-top: 0; line-height: 1">Tus anuncios</h2>
+
+				<div *ngIf="to?.length == 0">
+					<h4>No hay preguntas a tus anuncios</h4>
+				</div>
+
+				<div id="accordion1" style="width: 100%">
+					<div class="card" *ngFor="let t of to_publishing; let i = index">
+					    <div class="card-header" id="headingOne">
+					      <h5 class="mb-0">
+					        <button class="btn btn-link collapsed" style="width: 100%; text-align: left; color: #111;" data-toggle="collapse" [attr.data-target]="'#collapse-to'+i" aria-expanded="true" [attr.aria-controls]="'collapse-to'+i">
+					          {{t}}
+
+					          <span style="float: right; color: #111"> <i class="fa fa-arrow-down"></i> </span>
+					          <span style="float: right; color: #111"> <i class="fa fa-arrow-up"></i> </span>
+					        </button>
+					      </h5>
+					    </div>
+
+					    <div [id]="'collapse-to'+i" class="collapse" aria-labelledby="headingOne" data-parent="#accordion1">
+					      <div class="card-body">
+					      	
+					      	<div *ngFor="let g of to[t]">
+
+					      		<div [id]="'accordion-to'+g.id">
+					      			
+						      		<h4 data-toggle="collapse" (click)="scrollHeight()" [attr.data-target]="'#messages-to'+g.id" style="border-bottom: 1px solid #767070; cursor: pointer">Mensajes de {{g.questioner.name+' '+g.questioner.last_name}}</h4>
+
+						      		<div [id]="'messages-to'+g.id" class="collapse messages" [attr.data-parent]="'#accordion-to'+g.id">
+
+						      			<div class="mensajes-box">
+							      			<div *ngFor="let m of g.messages" style="padding-left:16px">
+							      				<b>{{m.from.name}}:</b> {{m.message}} <br>
+							      				<small style="color: #767070;">{{m.created_at | time:'add'}}</small>
+							      			</div>
+
+						      			</div>
+						      			<div class="responder-box" *ngIf="g.messages[g.messages.length-1].from.id != user.id">
+						      				<div class="input-group">
+						      					<input type="text" class="form-control" placeholder="Responde desde aquí" [id]="'question-'+g.id">
+						      					<div class="input-group-btn">
+						      						<button class="btn btn-info" (click)="enviarRespuesta(g.id,g.owner_id,g.questioner_id)"><i class="fa fa-send"></i></button>
+						      					</div>
+						      				</div>
+						      			</div>
+						      		</div>
+
+					      		</div>
+
+					      	</div>
+
+					      </div>
+					    </div>
+					</div>
+				</div>
+
+				<br>
+
+				<h2 style="margin-top: 0; line-height: 1">Preguntas realizadas</h2>
+
+				<div *ngIf="from?.length == 0">
+					<h4>No has realizado ninguna pregunta</h4>
+				</div>
+
+				<div id="accordion2" style="width: 100%">
+					<div class="card" *ngFor="let f of from_publishing; let i = index">
+					    <div class="card-header" id="headingOne">
+					      <h5 class="mb-0">
+					        <button class="btn btn-link collapsed" style="width: 100%; text-align: left; color: #111;" data-toggle="collapse" [attr.data-target]="'#collapse-from'+i" aria-expanded="true" [attr.aria-controls]="'collapse-from'+i">
+					          {{f}}
+
+					          <span style="float: right; color: #111"> <i class="fa fa-arrow-down"></i> </span>
+					          <span style="float: right; color: #111"> <i class="fa fa-arrow-up"></i> </span>
+					        </button>
+					      </h5>
+					    </div>
+
+					    <div [id]="'collapse-from'+i" class="collapse" aria-labelledby="headingOne" data-parent="#accordion2">
+					      <div class="card-body">
+					      	
+					      	<div *ngFor="let g of from[f]">
+
+					      		<div [id]="'accordion-from'+g.id">
+					      			
+						      		<h4 data-toggle="collapse" (click)="scrollHeight()" [attr.data-target]="'#messages-from'+g.id" style="border-bottom: 1px solid #767070; cursor: pointer">Mensajes de {{g.owner.name+' '+g.owner.last_name}}</h4>
+
+						      		<div [id]="'messages-from'+g.id" class="collapse messages" [attr.data-parent]="'#accordion-from'+g.id">
+
+						      			<div class="mensajes-box">
+							      			<div *ngFor="let m of g.messages" style="padding-left:16px">
+							      				<b>{{m.from.name}}:</b> {{m.message}} <br>
+							      				<small style="color: #767070;">{{m.created_at | time:'add'}}</small>
+							      			</div>
+
+						      			</div>
+						      			<div class="responder-box" *ngIf="g.messages[g.messages.length-1].from.id != user.id">
+						      				<div class="input-group">
+						      					<input type="text" class="form-control" placeholder="Realiza otra pregunta aquí" [id]="'question-'+g.id">
+						      					<div class="input-group-btn">
+						      						<button class="btn btn-info" (click)="enviarPregunta(g.id,g.advert_id,g.owner_id,g.questioner_id)"><i class="fa fa-send"></i></button>
+						      					</div>
+						      				</div>
+						      			</div>
+						      		</div>
+
+					      		</div>
+
+					      	</div>
+
+					      </div>
+					    </div>
+					</div>
+				</div>
+
+				<br>
+
+				<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
+
+			</div>
+
+
+		</div>
+
+
+	</div>
+
+</div>
+
+<app-footer></app-footer>

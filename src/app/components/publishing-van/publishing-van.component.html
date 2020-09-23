@@ -1,0 +1,73 @@
+<div *ngIf="!loading">
+  <div class="media publishing" *ngFor="let v of data">
+    <div class="publishing-img" [ngStyle]="{'background-image':'url('+v.gallery[0].file+')'}">
+  	<div class="category-dot">
+  		<img src="assets/iconos/car.svg" alt="">
+  	</div>
+    	<div class="publishing-inner">
+    		<div class="w100">
+  	  		<div class="share" [routerLink]="['/detalles/'+v.id]">
+  	  			<i class="fa fa-share"></i>
+  	  		</div>
+
+  	  		<div>
+  		  		<i class="fa fa-eye"></i> 10 234 &nbsp;&nbsp;&nbsp;
+  		  		<i class="fa fa-heart-o"></i> 253
+  	  		</div>
+
+  	  		<a href="https://www.google.co.ve/maps" target="_blank" class="btn see-in-map"><i class="fa fa-map-marker"></i> Ver en el mapa</a>
+    		</div>
+    	</div>
+    </div>
+    <div class="media-body">
+      <h2 class="mt-0" style="margin-bottom: 8px; overflow: hidden; height: 32px; position: relative;"><span class="v-title" [title]="v.title">{{v.title}}</span>
+        <img src="assets/iconos/cn.svg" class="mr-2" style="width: 40px; position: absolute; top: -2px;" alt=""> <!-- <b style="font-size: 14px; position: relative; margin-left: 45px;">Logo Empresa</b> -->
+
+        <i (click)="favorite(v.id,$event)" [class]="(v.id | favorite:favorites) ? 'favorite fa fa-heart pull-right' : 'favorite fa fa-heart-o pull-right'"></i>
+
+      </h2>
+       
+      <div class="row" style="margin-bottom: -20px;">
+      	<div class="col-3">
+      		<h3 class="mb-0"><b style="font-size: 120%;">{{v.price | thousands}}€</b> <br> <small style="position: relative; top: -8px;">Al contado</small></h3>
+      		<h3 class="mb-0" style="position: relative; top: -10px; color: #43A7E5;"><b style="font-size: 120%;">{{v.price | thousands}}€</b> <br> <small style="position: relative; top: -8px; color: #333">Precio profesional</small></h3>
+      	</div>
+      	<div class="col-4">
+      		<h3 class="mb-0"><b style="font-size: 120%; color: crimson;">{{v.price | thousands}}€</b> <br> <small style="position: relative; top: -8px;">Financiado</small></h3>
+      		<h3 class="mb-0" style="position: relative; top: -10px; line-height: 22px;">
+            <span *ngIf="v.guarantee"><i style="color: #249827;" class="fa fa-check"></i> <b style="font-size: 10px;">GARANTIA: {{v.guarantee_time}} meses</b> <br></span>
+            <span *ngIf="v.iva"><i style="color: #249827;" class="fa fa-check"></i> <b style="font-size: 10px;">IVA DEDUCIBLE INC.</b></span>
+            </h3>
+      	</div>
+      	<div class="col-5">
+      		<div class="row" style="font-size: 12px; line-height: 19px">
+      			<div class="col-6" style="padding:0">
+      				Kilometros: <br>
+      				Año: <br>
+      				Potencia/Motor: <br>
+      				Combustible: <br>
+      				Caja de cambios: <br>
+      			</div>
+      			<div class="col-6 pre-features" style="padding:0">
+      				<b>{{v.kilometers | thousands}} Km</b>
+              <b>{{v.vehicle.year_start}}</b>
+              <b [title]="v.vehicle.features | features:'potencia_de_motor'">{{v.vehicle.features | features:'potencia_de_motor'}}</b>
+      				<b [title]="v.vehicle.features | features:'tipo_de_motor'">{{v.vehicle.features | features:'tipo_de_motor'}}</b>
+      				<b [title]="v.gearbox">{{v.gearbox}}</b>
+      			</div>
+      		</div>
+      	</div>
+      </div>
+
+      <hr style="border-width: 1px; border-color: #e9e9e9; box-shadow: 0 0 10px 1px #91aeae; ">
+  	
+  	<i class="fa fa-map-marker"></i> {{v.province}}
+
+  	<button class="btn btn-sm btn-publishing btn-success">Profesional</button>
+  	<button *ngIf="!perfil" class="btn btn-sm btn-publishing btn-outline-secondary">Ver mas vehiculos del profesional</button>
+    <button *ngIf="perfil" class="btn btn-sm btn-publishing btn-info">EDITAR ANUNCIO</button>
+    </div>
+  </div>
+</div>
+
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>

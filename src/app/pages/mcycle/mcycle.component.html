@@ -1,0 +1,152 @@
+<app-header></app-header>
+
+<div class="main-wrapper">
+	
+	<div class="container">
+		
+		<div class="row">
+			<div class="col-md-3">
+				<img src="assets/logo.png" [routerLink]="['/']" class="main-logo" alt="">
+			</div>
+			<div class="col-md-9">
+				<img src="assets/banner.jpg" style="width: 100%;" alt="">
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-3"></div>
+			<div class="col-md-9">
+				<h1 class="h1-detail">{{v.title}}</h1>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-3">
+				<div class="card bs-mh mb-20">
+					<div class="card-body card-detail">
+						Categoría: <b>Motos</b> <br>
+						Estado: <b>Usado</b> <br>
+						Primer Registro: <b>03/2013</b> <br>
+						Combustible: <b>Gasolina</b> <br>
+						Caja de cambios: <b>Mecánica</b> <br>
+						Kilometraje: <b>{{v.kilometers}}</b> <br>
+						Potencia/Motor: <b>{{v?.vehicle?.features | features:'caballos_de_fuerza'}}</b> <br>
+						Cilindrada: <b>{{v?.vehicle?.features | features:'desplazamiento'}}</b> <br>
+						<!-- Tracción: <b>xxxxxxxx</b> <br> -->
+						Cantidad de propid.: <b>2</b> <br>
+						Tanque: <b>{{v?.vehicle?.features | features:'capacidad_de_combustible'}}</b> <br>
+						Garantía: <b>Si</b> <br>
+						IVA Deducible: <b>No</b> <br>
+						Color: <b>{{v.color}}</b> <br>
+					</div>
+				</div>
+
+				<img src="assets/banner1.jpg" class="w100" alt="">
+			</div>
+			<div class="col-md-6">
+				<div class="main-view">
+
+					<angular-image-viewer *ngIf="motos.length > 0" [src]="motos"></angular-image-viewer>
+					<!-- <img [src]="" alt=""> -->
+					
+				</div>
+
+				<!-- <div class="thumbs mb-20">
+					<div *ngFor="let c of motos" (click)="changeCar(c)">
+						<span [ngStyle]="{'background-image':'url(assets/motos/moto'+c+'.jpg)'}"></span>
+					</div>
+				</div> -->
+
+				<div class="card bs-mh mb-20">
+					<div class="card-body">
+						<h3><b>Comentarios del Vendedor</b></h3>
+						<hr style="border-width: 1px; border-color: #e9e9e9; box-shadow: 0 0 10px 1px #91aeae; ">
+						<div>
+							<p>
+								{{v.description}}
+							</p>
+							<br>
+							<h3><b>Ejemplo de financiación:</b></h3>
+							<p>- Entrada 9.900€ <br>
+							   - 72 Cuotas de 557€
+							</p>
+							<br>
+							Tenemos servicio de recogida en Aeropuerto y en estación de Renfe
+						</div>
+					</div>
+				</div>
+
+				<img src="assets/banner.jpg" style="width: 100%;" alt="">
+
+			</div>
+			<div class="col-md-3">
+				<div class="card bs-mh mb-20">
+					<div class="card-body">
+						<div class="row" style="margin-bottom: -20px;">
+					    	<div class="col-6">
+					    		<h3 class="mb-0"><b style="font-size: 120%;">{{v.price | thousands}}€</b> <br> <small style="position: relative; top: -8px;">Al contado</small></h3>
+					    		<h3 class="mb-0" style="position: relative; top: -10px; color: #43A7E5;"><b style="font-size: 120%;">{{v.price | thousands}}€</b> <br> <small style="position: relative; top: -8px;">Profesional</small></h3>
+					    	</div>
+					    	<div class="col-6">
+					    		<h3 class="mb-0"><b style="font-size: 120%; color: crimson;">{{v.price | thousands}}€</b> <br> <small style="position: relative; top: -8px;">Financiado</small></h3>
+					    		<h3 class="mb-0" *ngIf="v?.guarantee" style="position: relative; top: -10px; line-height: 22px;"><b style="font-size: 10px;">GARANTIA: {{v?.guarantee_time}} meses</b> <br>
+					    			<b style="font-size: 10px;" *ngIf="v?.iva">IVA DEDUCIBLE INCLUIDO</b></h3>
+					    	</div>
+					    </div>
+					</div>
+					<div class="card-body contact-box bs-mh">
+						<div class="text-center">
+				    		<img src="assets/iconos/cn.svg" class="mr-2" style="width: 60px;" alt=""> <b>Logo Empresa</b>
+						</div>
+
+						<div class="lh">
+							<i class="fa fa-map-marker"></i> {{v?.user.province || '--'}} <br>
+							
+							<i class="fa fa-phone"></i> {{v?.user.phone}} <br>
+
+							<i class="fa fa-envelope"></i> {{v?.user.email}} <br>
+
+							<i class="fa fa-link"></i> <a href="#"> lawebdelcliente.com</a> <br>
+
+							<h3 class="stars">4.2
+								<i class="fa fa-star"></i>
+								<i class="fa fa-star"></i>
+								<i class="fa fa-star"></i>
+								<i class="fa fa-star-half-o"></i>
+								<i class="fa fa-star-o"></i>
+							</h3>
+
+						</div>
+
+						<button class="btn btn-warning btn-block" style="color: #fff !important">Contactar</button>
+
+				    </div>
+				</div>
+
+				<div class="card bs-mh mb-20">
+					<div class="card-body">
+						<h3><b>Extras</b></h3>
+						<hr style="border-width: 1px; border-color: #e9e9e9; box-shadow: 0 0 10px 1px #91aeae; ">
+
+						<ul>
+							<li><a href="#">Solicitar informe DGT</a></li>
+							<li><a href="#">Solicitar informe CARFAX</a></li>
+						</ul>
+
+						<button class="btn btn-danger btn-block" style="color: #fff !important">Denunciar anuncio</button>
+					</div>
+				</div>
+
+				<div class="mb-20">
+					<app-share></app-share>
+				</div>
+
+				<img src="assets/banner1.jpg" class="w100" alt="">
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+<app-footer></app-footer>

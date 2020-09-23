@@ -1,0 +1,16 @@
+.btn-link .fa-arrow-down {display: none;}
+.btn-link .fa-arrow-up {display: block;}
+
+.btn-link.collapsed .fa-arrow-down {display: block;}
+.btn-link.collapsed .fa-arrow-up {display: none;}
+
+.messages {
+	.mensajes-box {
+		max-height: 100px;
+		overflow: auto;
+	}
+	.responder-box {
+		padding-left: 16px;
+		margin-bottom: 16px;
+	}
+}

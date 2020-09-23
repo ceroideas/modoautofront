@@ -1,0 +1,76 @@
+<div class="card" style="border-color: #a0a0a0;">
+	<div class="card-heading" style="padding: 14px 10px; border-bottom: 1px solid #a0a0a0; text-align: center;">
+		<button class="btn btn-secondary btn-sm" (click)="saveFilter()" style="background-color:#e9e9e9;font-size:10px;float:left;color:#333; border-color: #a0a0a0">Guardar búsqueda</button>
+		<button class="btn btn-secondary btn-sm" (click)="deleteFilter()" style="background-color:#e9e9e9;font-size:10px;float:right;color:#333; border-color: #a0a0a0">Borrar filtro</button>
+
+		<div class="clearfix"></div>
+
+		<h1 style="margin: 15px 0 5px; font-size: 24px;">{{results}}</h1>
+		<h4 style="margin: 0">Repuestos encontrados</h4>
+	</div>
+	<div class="card-body card-filter">
+
+		<div class="form-group">
+			<label no-margin><small><b>PROVINCIAS</b></small></label> <br>
+			<select2 class="custom-select2" [data]="provinces"
+				placeholder="Provincia"
+				[value]="value"
+				displaySearchStatus="always"
+				multiple_
+				[(ngModel)]="province"
+			    (update)="filter()">
+			</select2>
+		</div>
+
+		<div class="form-group">
+			<label no-margin><small><b>TIPO DE REPUESTO</b></small></label> <br>
+
+			<div class="btn-group" role="group" aria-label="Basic example">
+			  <input type="radio" name="rep_type" [(ngModel)]="rep_type" id="rep_type1" value="Usado" (change)="filter()"> <label for="rep_type1" class="btn btn-secondary">Usado</label>
+			  <input type="radio" name="rep_type" [(ngModel)]="rep_type" id="rep_type2" value="Nuevo" (change)="filter()"> <label for="rep_type2" class="btn btn-secondary">Nuevo</label>
+			  <input type="radio" name="rep_type" [(ngModel)]="rep_type" id="rep_type3" value="Usado - Como nuevo" (change)="filter()"> <label for="rep_type3" class="btn btn-secondary">Seminuevo</label>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label no-margin><small><b>PRECIO</b></small></label> <br>
+			<!-- <div class="input-group"> -->
+				<!-- <select [(ngModel)]="price.from" (change)="filter()" class="form-control form-control-filter" placeholder="Desde">
+					<option value="{{i}}" *ngFor="let i of pricesList">Desde {{i | thousands}}€</option>
+				</select> -->
+				<select2 class="custom-select2" [data]="prices_"
+					placeholder="Desde"
+				    displaySearchStatus="always"
+				    multiple_
+				    [(ngModel)]="price.from"
+				    (update)="filter()">
+				</select2>
+				<!-- <select [(ngModel)]="price.to" (change)="filter()" class="form-control form-control-filter" placeholder="Hasta">
+					<option value="{{i}}" *ngFor="let i of pricesList">Hasta {{i | thousands}}€</option>
+					<option value="999999">Más de 70.000€</option>
+				</select> -->
+				<select2 class="custom-select2" [data]="prices_"
+					placeholder="Hasta"
+				    displaySearchStatus="always"
+				    multiple_
+				    [(ngModel)]="price.to"
+				    (update)="filter()">
+				</select2>
+				<!-- <input type="number" [(ngModel)]="price.from" (change)="filter()" class="form-control form-control-filter" placeholder="Desde">
+				<input type="number" [(ngModel)]="price.to" (change)="filter()" class="form-control form-control-filter" placeholder="Hasta"> -->
+			<!-- </div> -->
+		</div>
+
+		<!-- <div class="form-group">
+			<label no-margin><small><b>PROVINCIAS</b></small></label> <br>
+			<select2 class="custom-select2" [data]="provinces"
+				[value]="value"
+				displaySearchStatus="always"
+				multiple="true"
+			    (update)="update($event)">
+			</select2>
+		</div> -->
+
+
+	</div>
+</div>

@@ -1,1 +1,1050 @@
-<p>details works!</p>
+<app-header></app-header>
+
+<!-- <meta content='{{v?.title}}' property='og:title'/>
+<meta content='{{v?.description}}' property='og:description'/>
+<meta content='{{cars[0]}}' property='og:image'/> -->
+
+<base target="_blank">
+
+<div class="main-wrapper">
+	
+	<div class="container">
+		
+		<div class="row">
+			<div class="col-md-3">
+				<img src="assets/logo.png" [routerLink]="['/']" class="main-logo" alt="">
+			</div>
+			<div class="col-md-9">
+				<img *ngIf="banner" (click)="api.openLink(banner.link)" [src]="banner.file" style="width: 100%; cursor: pointer;" alt="">
+			</div>
+		</div>
+
+		<div class="row" *ngIf="v && (!(v?.valid_until | isvalid) || !v?.activated_at)">
+			<div class="col-sm-3">
+				<img *ngIf="banner2" (click)="api.openLink(banner2.link)" [src]="banner2.file" style="width: 100%; cursor: pointer;" alt="">
+			</div>
+
+			<div class="col-sm-9">
+				<br>
+				<br>
+				<h1>El anuncio no está disponible en este momento</h1>
+			</div>
+		</div>
+
+		<div *ngIf="(v?.valid_until | isvalid) && v?.activated_at">
+			
+			<div class="row">
+				<div class="col-md-3"></div>
+				<div class="col-md-9">
+					<h1 class="h1-detail">{{v?.title}}</h1>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-3">
+					<div class="card bs-mh mb-20">
+						<div class="card-body card-detail">
+							Estado: <b>Usado</b> <br>
+							Primer Registro: <b>03/2005</b> <br>
+							Combustible: <b>{{v?.vehicle?.features | features:'tipo_de_motor'}}</b> <br>
+							Caja de cambios: <b>{{v?.gearbox}}</b> <br>
+							Kilometraje: <b>{{v?.kilometers | thousands}}Km</b> <br>
+							Potencia/Motor: <b>{{v?.vehicle?.features | features:'potencia_del_motor'}}</b> <br>
+							Carrocería: <b>{{v?.vehicle?.features | features:'carroceria'}}</b> <br>
+							Tracción: <b>{{v?.vehicle?.features | features:'ruedas_motrices'}}</b> <br>
+							Cantidad de propid.: <b>3</b> <br>
+							Consumo: <br>
+							<b>
+							<span>Urbano {{v?.vehicle?.features | features:'consumo_urbano_por_100_km'}}/100km </span> <br>
+						    <span>Extraurbano {{v?.vehicle?.features | features:'consumo_extraurbano_por_100_km'}}/100km </span> <br>
+						    <span>Media {{v?.vehicle?.features | features:'consumo_medio_por_100_km'}}/100km </span> <br>
+							<!-- {{v?.vehicle?.features | features:'consumo_urbano_por_100_km'}}Km/l --></b>
+							Garantía: <b>{{v?.guarantee == 1 ? 'Si' : 'No'}}</b> <br>
+							IVA Deducible: <b>{{v?.iva == 1 ? 'Si' : 'No'}}</b> <br>
+						</div>
+					</div>
+
+					<img *ngIf="banner2" (click)="api.openLink(banner2.link)" [src]="banner2.file" style="width: 100%; cursor: pointer;" alt="">
+				</div>
+				<div class="col-md-6">
+
+					<owl-carousel-o [options]="customOptions">
+					    <ng-template carouselSlide *ngIf="video">
+					    	<iframe width="100%" height="405" style="border: none;" [src]="video.youtube_link | sanitizer"></iframe>
+					    </ng-template>  
+					    <ng-template carouselSlide>
+					    	<div class="main-view">
+
+								<angular-image-viewer *ngIf="cars.length > 0" [src]="cars"></angular-image-viewer>
+								
+							</div>
+					    </ng-template>  
+					</owl-carousel-o>
+
+					<!-- <div class="thumbs mb-20">
+						<div *ngFor="let c of cars" (click)="changeCar(c)">
+							<span [ngStyle]="{'background-image':'url(assets/bmw/'+c+'.jpg)'}"></span>
+						</div>
+					</div> -->
+
+					<div class="card bs-mh mb-20">
+						<div class="card-body">
+							<h3><b>Comentarios del Vendedor</b></h3>
+							<hr style="border-width: 1px; border-color: #e9e9e9; box-shadow: 0 0 10px 1px #91aeae; ">
+							<div>
+								<p [innerHtml]="v?.description">
+								</p>
+								<!-- <br>
+								<h3><b>Ejemplo de financiación:</b></h3>
+								<p>- Entrada 9.900€ <br>
+								   - 72 Cuotas de 557€
+								</p>
+								<br>
+								Tenemos servicio de recogida en Aeropuerto y en estación de Renfe -->
+							</div>
+						</div>
+					</div>
+
+					<div class="card bs-mh mb-20">
+						<div class="card-body">
+							<h3><b>Equipamiento</b></h3>
+							<hr style="border-width: 1px; border-color: #e9e9e9; box-shadow: 0 0 10px 1px #91aeae; ">
+							<div>
+<div *ngIf="v.equipments | checkEquipments:['Airbag acompañante','Airbag trasero','Airbag del conductor','Airbags laterales','Airbag para la cabeza']">
+	
+	<h3 style="font-weight: bold;">Airbag</h3>
+		<div class="row" style="margin-bottom: 12px;">
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Airbag acompañante'">
+				<label> <i class="fa fa-check"></i> Airbag acompañante</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Airbag trasero'">
+				<label> <i class="fa fa-check"></i> Airbag trasero</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Airbag del conductor'">
+				<label> <i class="fa fa-check"></i> Airbag del conductor</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Airbags laterales'">
+				<label> <i class="fa fa-check"></i> Airbags laterales</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Airbag para la cabeza'">
+				<label> <i class="fa fa-check"></i> Airbag para la cabeza</label>
+			</div>
+		</div>
+</div>
+
+<div *ngIf="v.equipments | checkEquipments:['Aire Acondicionado','Climatizador automático, 3 zonas','Climatizador automático','Climatizador automático, 4 zonas','Climatizador automático, 2 zonas']">
+	
+	<h3 style="font-weight: bold;">Aire Acondicionado</h3>
+		<div class="row" style="margin-bottom: 12px;">
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Aire Acondicionado'">
+				<label> <i class="fa fa-check"></i> Aire Acondicionado</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Climatizador automático, 3 zonas'">
+				<label> <i class="fa fa-check"></i> Climatizador automático, 3 zonas</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Climatizador automático'">
+				<label> <i class="fa fa-check"></i> Climatizador automático</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Climatizador automático, 4 zonas'">
+				<label> <i class="fa fa-check"></i> Climatizador automático, 4 zonas</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Climatizador automático, 2 zonas'">
+				<label> <i class="fa fa-check"></i> Climatizador automático, 2 zonas</label>
+			</div>
+		</div>
+</div>
+
+<div *ngIf="v.equipments | checkEquipments:[
+	'Ajuste lumbar',
+	'Asientos con masaje',
+	'Asiento del copiloto abatible',
+	'Asientos deportivos',
+	'Asiento trasero partido',
+	'Asientos eléctricos',
+	'Asientos calef.',
+	'Ventilación del asiento']">
+	
+	<h3 style="font-weight: bold;">Asientos</h3>
+		<div class="row" style="margin-bottom: 12px;">
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Ajuste lumbar'">
+				<label> <i class="fa fa-check"></i> Ajuste lumbar</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Asientos con masaje'">
+				<label> <i class="fa fa-check"></i> Asientos con masaje</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Asiento del copiloto abatible'">
+				<label> <i class="fa fa-check"></i> Asiento del copiloto abatible</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Asientos deportivos'">
+				<label> <i class="fa fa-check"></i> Asientos deportivos</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Asiento trasero partido'">
+				<label> <i class="fa fa-check"></i> Asiento trasero partido</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Asientos eléctricos'">
+				<label> <i class="fa fa-check"></i> Asientos eléctricos</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Asientos calef.'">
+				<label> <i class="fa fa-check"></i> Asientos calef.</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Ventilación del asiento'">
+				<label> <i class="fa fa-check"></i> Ventilación del asiento</label>
+			</div>
+		</div>
+</div>
+
+<div *ngIf="v.equipments | checkEquipments:[
+	'360° cámara',
+	'Sensor de aparcamiento trasero',
+	'Cámara de aparcamiento',
+	'Sistema de aparcamiento automático',
+	'Sensor de aparcamiento delantero'
+]">
+	
+	<h3 style="font-weight: bold;">Asistente de aparcamiento</h3>
+		<div class="row" style="margin-bottom: 12px;">
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'360° cámara'">
+				<label> <i class="fa fa-check"></i> 360° cámara</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Sensor de aparcamiento trasero'">
+				<label> <i class="fa fa-check"></i> Sensor de aparcamiento trasero</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Cámara de aparcamiento'">
+				<label> <i class="fa fa-check"></i> Cámara de aparcamiento</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Sistema de aparcamiento automático'">
+				<label> <i class="fa fa-check"></i> Sistema de aparcamiento automático</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Sensor de aparcamiento delantero'">
+				<label> <i class="fa fa-check"></i> Sensor de aparcamiento delantero</label>
+			</div>
+		</div>
+</div>
+
+<div *ngIf="v.equipments | checkEquipments:[
+	'Apertura y arranque sin llave',
+	'Cierre centralizado con mando a distancia',
+	'Cierre centralizado'
+]">
+	
+	<h3 style="font-weight: bold;">Cierre centralizado</h3>
+		<div class="row" style="margin-bottom: 12px;">
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Apertura y arranque sin llave'">
+				<label> <i class="fa fa-check"></i> Apertura y arranque sin llave</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Cierre centralizado con mando a distancia'">
+				<label> <i class="fa fa-check"></i> Cierre centralizado con mando a distancia</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Cierre centralizado'">
+				<label> <i class="fa fa-check"></i> Cierre centralizado</label>
+			</div>
+		</div>
+</div>
+
+<div *ngIf="v.equipments | checkEquipments:[
+	'Cambio de levas en volante',
+	'Reposabrazos',
+	'Dirección asistida',
+	'Retrovisores laterales eléctricos',
+	'Elevalunas eléctrico',
+	'Sensor de lluvia',
+	'Pantalla frontal',
+	'Sensor de luces',
+	'Parabrisas delantero calefactable',
+	'Start/Stop automático',
+	'Portón trasero électrique',
+	'Suspensión de aire',
+	'Precalentador',
+	'Techo panorámico',
+	'Puertas corredizas',
+	'Techo solar',
+	'Puertas corredizas derecho',
+	'Volante calefactable',
+	'Puertas corredizas izquierda',
+	'Volante de cuero'
+]">
+	
+	<h3 style="font-weight: bold;">Comodidad</h3>
+		<div class="row" style="margin-bottom: 12px;">
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Cambio de levas en volante'">
+				<label> <i class="fa fa-check"></i> Cambio de levas en volante</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Reposabrazos'">
+				<label> <i class="fa fa-check"></i> Reposabrazos</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Dirección asistida'">
+				<label> <i class="fa fa-check"></i> Dirección asistida</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Retrovisores laterales eléctricos'">
+				<label> <i class="fa fa-check"></i> Retrovisores laterales eléctricos</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Elevalunas eléctrico'">
+				<label> <i class="fa fa-check"></i> Elevalunas eléctrico</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Sensor de lluvia'">
+				<label> <i class="fa fa-check"></i> Sensor de lluvia</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Pantalla frontal'">
+				<label> <i class="fa fa-check"></i> Pantalla frontal</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Sensor de luces'">
+				<label> <i class="fa fa-check"></i> Sensor de luces</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Parabrisas delantero calefactable'">
+				<label> <i class="fa fa-check"></i> Parabrisas delantero calefactable</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Start/Stop automático'">
+				<label> <i class="fa fa-check"></i> Start/Stop automático</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Portón trasero électrique'">
+				<label> <i class="fa fa-check"></i> Portón trasero électrique</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Suspensión de aire'">
+				<label> <i class="fa fa-check"></i> Suspensión de aire</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Precalentador'">
+				<label> <i class="fa fa-check"></i> Precalentador</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Techo panorámico'">
+				<label> <i class="fa fa-check"></i> Techo panorámico</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Puertas corredizas'">
+				<label> <i class="fa fa-check"></i> Puertas corredizas</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Techo solar'">
+				<label> <i class="fa fa-check"></i> Techo solar</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Puertas corredizas derecho'">
+				<label> <i class="fa fa-check"></i> Puertas corredizas derecho</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Volante calefactable'">
+				<label> <i class="fa fa-check"></i> Volante calefactable</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Puertas corredizas izquierda'">
+				<label> <i class="fa fa-check"></i> Puertas corredizas izquierda</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Volante de cuero'">
+				<label> <i class="fa fa-check"></i> Volante de cuero</label>
+			</div>
+		</div>
+</div>
+
+<div *ngIf="v.equipments | checkEquipments:[
+	'Control de distancia',
+	'Control de velocidad'
+]">
+	
+	<h3 style="font-weight: bold;">Control de velocidad</h3>
+		<div class="row" style="margin-bottom: 12px;">
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Control de distancia'">
+				<label> <i class="fa fa-check"></i> Control de distancia</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Control de velocidad'">
+				<label> <i class="fa fa-check"></i> Control de velocidad</label>
+			</div>
+		</div>
+</div>
+
+<div *ngIf="v.equipments | checkEquipments:[
+	'Android Auto',
+	'Punto de conexión WiFi / WLAN',
+	'Apple CarPlay',
+	'Radio digital',
+	'Carga inalámbrica para smartphones',
+	'Salpicadero completamente digital',
+	'Control por voz',
+	'Sistema de sonido',
+	'Función de TV',
+	'Streaming de música integrado',
+	'Pantalla táctil',
+	'USB'
+]">
+	
+	<h3 style="font-weight: bold;">Entretenimiento</h3>
+		<div class="row" style="margin-bottom: 12px;">
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Android Auto'">
+				<label> <i class="fa fa-check"></i> Android Auto</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Punto de conexión WiFi / WLAN'">
+				<label> <i class="fa fa-check"></i> Punto de conexión WiFi / WLAN</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Apple CarPlay'">
+				<label> <i class="fa fa-check"></i> Apple CarPlay</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Radio digital'">
+				<label> <i class="fa fa-check"></i> Radio digital</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Carga inalámbrica para smartphones'">
+				<label> <i class="fa fa-check"></i> Carga inalámbrica para smartphones</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Salpicadero completamente digital'">
+				<label> <i class="fa fa-check"></i> Salpicadero completamente digital</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Control por voz'">
+				<label> <i class="fa fa-check"></i> Control por voz</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Sistema de sonido'">
+				<label> <i class="fa fa-check"></i> Sistema de sonido</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Función de TV'">
+				<label> <i class="fa fa-check"></i> Función de TV</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Streaming de música integrado'">
+				<label> <i class="fa fa-check"></i> Streaming de música integrado</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Pantalla táctil'">
+				<label> <i class="fa fa-check"></i> Pantalla táctil</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'USB'">
+				<label> <i class="fa fa-check"></i> USB</label>
+			</div>
+		</div>
+</div>
+
+<div *ngIf="v.equipments | checkEquipments:[
+	'Bluetooth',
+	'Navegador',
+	'CD',
+	'Ordenador',
+	'MP3',
+	'Radio',
+	'Manos libres',
+	'Volante multifunción'
+]">
+	
+	<h3 style="font-weight: bold;">Entretenimiento / Medios</h3>
+		<div class="row" style="margin-bottom: 12px;">
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Bluetooth'">
+				<label> <i class="fa fa-check"></i> Bluetooth</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Navegador'">
+				<label> <i class="fa fa-check"></i> Navegador</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'CD'">
+				<label> <i class="fa fa-check"></i> CD</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Ordenador'">
+				<label> <i class="fa fa-check"></i> Ordenador</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'MP3'">
+				<label> <i class="fa fa-check"></i> MP3</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Radio'">
+				<label> <i class="fa fa-check"></i> Radio</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Manos libres'">
+				<label> <i class="fa fa-check"></i> Manos libres</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Volante multifunción'">
+				<label> <i class="fa fa-check"></i> Volante multifunción</label>
+			</div>
+		</div>
+</div>
+
+<div *ngIf="v.equipments | checkEquipments:[
+	'Adaptado discapacitados',
+	'Neumáticos de invierno',
+	'Autonomía extendida',
+	'Neumáticos de verano',
+	'Baca',
+	'Neumáticos para todo el año',
+	'Bola de remolque',
+	'Paquete Sport',
+	'Catalizador',
+	'Paquete para fumadores',
+	'Conversión en biodiésel',
+	'Paquete para invierno',
+	'Cortavientos',
+	'Porta esquís',
+	'Deflector',
+	'Retrovisor interior con oscurecimiento automático',
+	'Freno de estacionamiento electrónico',
+	'Rueda de emergencia',
+	'Iluminación ambiental',
+	'Rueda de repuesto',
+	'Indicado para E10',
+	'Separación del maletero',
+	'Kit de reparación de averías',
+	'Sistema de lavado de faros',
+	'Llantas de acero',
+	'Suspensión deportiva',
+	'Llantas de aleación',
+	'Tunning',
+	'Manejo del lado derecho',
+	'Ventanas tintadas'
+]">
+	
+	<h3 style="font-weight: bold;">Extras</h3>
+		<div class="row" style="margin-bottom: 12px;">
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Adaptado discapacitados'">
+				<label> <i class="fa fa-check"></i> Adaptado discapacitados</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Neumáticos de invierno'">
+				<label> <i class="fa fa-check"></i> Neumáticos de invierno</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Autonomía extendida'">
+				<label> <i class="fa fa-check"></i> Autonomía extendida</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Neumáticos de verano'">
+				<label> <i class="fa fa-check"></i> Neumáticos de verano</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Baca'">
+				<label> <i class="fa fa-check"></i> Baca</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Neumáticos para todo el año'">
+				<label> <i class="fa fa-check"></i> Neumáticos para todo el año</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Bola de remolque'">
+				<label> <i class="fa fa-check"></i> Bola de remolque</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Paquete Sport'">
+				<label> <i class="fa fa-check"></i> Paquete Sport</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Catalizador'">
+				<label> <i class="fa fa-check"></i> Catalizador</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Paquete para fumadores'">
+				<label> <i class="fa fa-check"></i> Paquete para fumadores</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Conversión en biodiésel'">
+				<label> <i class="fa fa-check"></i> Conversión en biodiésel</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Paquete para invierno'">
+				<label> <i class="fa fa-check"></i> Paquete para invierno</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Cortavientos'">
+				<label> <i class="fa fa-check"></i> Cortavientos</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Porta esquís'">
+				<label> <i class="fa fa-check"></i> Porta esquís</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Deflector'">
+				<label> <i class="fa fa-check"></i> Deflector</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Retrovisor interior con oscurecimiento automático'">
+				<label> <i class="fa fa-check"></i> Retrovisor interior con oscurecimiento automático</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Freno de estacionamiento electrónico'">
+				<label> <i class="fa fa-check"></i> Freno de estacionamiento electrónico</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Rueda de emergencia'">
+				<label> <i class="fa fa-check"></i> Rueda de emergencia</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Iluminación ambiental'">
+				<label> <i class="fa fa-check"></i> Iluminación ambiental</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Rueda de repuesto'">
+				<label> <i class="fa fa-check"></i> Rueda de repuesto</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Indicado para E10'">
+				<label> <i class="fa fa-check"></i> Indicado para E10</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Separación del maletero'">
+				<label> <i class="fa fa-check"></i> Separación del maletero</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Kit de reparación de averías'">
+				<label> <i class="fa fa-check"></i> Kit de reparación de averías</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Sistema de lavado de faros'">
+				<label> <i class="fa fa-check"></i> Sistema de lavado de faros</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Llantas de acero'">
+				<label> <i class="fa fa-check"></i> Llantas de acero</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Suspensión deportiva'">
+				<label> <i class="fa fa-check"></i> Suspensión deportiva</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Llantas de aleación'">
+				<label> <i class="fa fa-check"></i> Llantas de aleación</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Tunning'">
+				<label> <i class="fa fa-check"></i> Tunning</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Manejo del lado derecho'">
+				<label> <i class="fa fa-check"></i> Manejo del lado derecho</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Ventanas tintadas'">
+				<label> <i class="fa fa-check"></i> Ventanas tintadas</label>
+			</div>
+		</div>
+</div>
+
+<div *ngIf="v.equipments | checkEquipments:[
+	'Faros LED íntegros',
+	'Luces de marcha diurna LED',
+	'Faros antiniebla',
+	'Luces láser',
+	'Faros de LED',
+	'Luz direccional',
+	'Faros de xenon',
+	'Luz diurna',
+	'Faros delanteros bi-xenon',
+	'Sensor de luces',
+	'Luces de carretera antideslumbrantes'
+]">
+	
+	<h3 style="font-weight: bold;">Luz</h3>
+		<div class="row" style="margin-bottom: 12px;">
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Faros LED íntegros'">
+				<label> <i class="fa fa-check"></i> Faros LED íntegros</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Luces de marcha diurna LED'">
+				<label> <i class="fa fa-check"></i> Luces de marcha diurna LED</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Faros antiniebla'">
+				<label> <i class="fa fa-check"></i> Faros antiniebla</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Luces láser'">
+				<label> <i class="fa fa-check"></i> Luces láser</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Faros de LED'">
+				<label> <i class="fa fa-check"></i> Faros de LED</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Luz direccional'">
+				<label> <i class="fa fa-check"></i> Luz direccional</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Faros de xenon'">
+				<label> <i class="fa fa-check"></i> Faros de xenon</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Luz diurna'">
+				<label> <i class="fa fa-check"></i> Luz diurna</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Faros delanteros bi-xenon'">
+				<label> <i class="fa fa-check"></i> Faros delanteros bi-xenon</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Sensor de luces'">
+				<label> <i class="fa fa-check"></i> Sensor de luces</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Luces de carretera antideslumbrantes'">
+				<label> <i class="fa fa-check"></i> Luces de carretera antideslumbrantes</label>
+			</div>
+		</div>
+</div>
+
+<div *ngIf="v.equipments | checkEquipments:[
+	'ABS',
+	'ISOFIX',
+	'Alarma',
+	'Inmovilizador',
+	'Control de tracción',
+	'Sistema de detección de fatiga',
+	'ESP'
+]">
+	
+	<h3 style="font-weight: bold;">Seguridad</h3>
+		<div class="row" style="margin-bottom: 12px;">
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'ABS'">
+				<label> <i class="fa fa-check"></i> ABS</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'ISOFIX'">
+				<label> <i class="fa fa-check"></i> ISOFIX</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Alarma'">
+				<label> <i class="fa fa-check"></i> Alarma</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Inmovilizador'">
+				<label> <i class="fa fa-check"></i> Inmovilizador</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Control de tracción'">
+				<label> <i class="fa fa-check"></i> Control de tracción</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Sistema de detección de fatiga'">
+				<label> <i class="fa fa-check"></i> Sistema de detección de fatiga</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'ESP'">
+				<label> <i class="fa fa-check"></i> ESP</label>
+			</div>
+		</div>
+</div>
+
+<div *ngIf="v.equipments | checkEquipments:[
+	'Alerta cambio de carril',
+	'Reconocimiento de señales de tráfico',
+	'Asistente al arranque en pendient',
+	'Sistema de aviso de la distancia',
+	'Asistente al frenado de emergencia',
+	'Sistema de limitación de la velocidad',
+	'Asistente de luz de carretera',
+	'Testigo de ángulo muerto',
+	'Asistente de visión nocturna'
+]">
+	
+	<h3 style="font-weight: bold;">Sistemas de asistencia</h3>
+		<div class="row" style="margin-bottom: 12px;">
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Alerta cambio de carril'">
+				<label> <i class="fa fa-check"></i> Alerta cambio de carril</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Reconocimiento de señales de tráfico'">
+				<label> <i class="fa fa-check"></i> Reconocimiento de señales de tráfico</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Asistente al arranque en pendient'">
+				<label> <i class="fa fa-check"></i> Asistente al arranque en pendient</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Sistema de aviso de la distancia'">
+				<label> <i class="fa fa-check"></i> Sistema de aviso de la distancia</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Asistente al frenado de emergencia'">
+				<label> <i class="fa fa-check"></i> Asistente al frenado de emergencia</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Sistema de limitación de la velocidad'">
+				<label> <i class="fa fa-check"></i> Sistema de limitación de la velocidad</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Asistente de luz de carretera'">
+				<label> <i class="fa fa-check"></i> Asistente de luz de carretera</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Testigo de ángulo muerto'">
+				<label> <i class="fa fa-check"></i> Testigo de ángulo muerto</label>
+			</div>
+			<div class="col-sm-6" *ngIf="v.equipments | equipments:'Asistente de visión nocturna'">
+				<label> <i class="fa fa-check"></i> Asistente de visión nocturna</label>
+			</div>
+		</div>
+</div>
+							</div>
+						</div>
+					</div>
+					
+					<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#ficha" style="position: relative; top: -6px; margin-bottom: 8px;"><i class="fa fa-eye"></i> CLICK PARA VER FICHA COMPLETA</button>
+
+					<div class="card bs-mh mb-20">
+						<div class="card-body">
+							<h3><b>Ficha Técnica</b>
+								</h3>
+							<hr style="border-width: 1px; border-color: #e9e9e9; box-shadow: 0 0 10px 1px #91aeae; ">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="media mb-20">
+									  <img class="mr-3 ft" src="assets/iconos/rule.svg" alt="svg">
+									  <div class="media-body details">
+									    <h4 class="mt-0"><b>Tamaño</b></h4>
+									    <span>Altura {{(v?.vehicle?.features | features:'altura') | thousands}} </span> <br>
+									    <span>Longitud {{(v?.vehicle?.features | features:'longitud') | thousands}} </span> <br>
+									    <span>Anchura {{(v?.vehicle?.features | features:'anchura') | thousands}} </span> <br>
+									  </div>
+									</div>
+
+									<div class="media mb-20">
+									  <img class="mr-3 ft" src="assets/iconos/trip.svg" alt="svg">
+									  <div class="media-body details">
+									    <h4 class="mt-0"><b>Volumen maletero</b></h4>
+									    <span>{{v?.vehicle?.features | features:'capacidad_maletero_max'}}</span> <br>
+									  </div>
+									</div>
+
+									<div class="media mb-20">
+									  <img class="mr-3 ft" src="assets/iconos/speed.svg" alt="svg">
+									  <div class="media-body details">
+									    <h4 class="mt-0"><b>Velocidad máxima</b></h4>
+									    <span>{{v?.vehicle?.features | features:'velocidad_maxima'}} </span> <br>
+									  </div>
+									</div>
+
+									<div class="media mb-20">
+									  <img class="mr-3 ft" src="assets/iconos/fuel-2.svg" alt="svg">
+									  <div class="media-body details">
+									    <h4 class="mt-0"><b>Consumo</b></h4>
+									    <span>Urbano {{v?.vehicle?.features | features:'consumo_urbano_por_100_km'}}/100km </span> <br>
+									    <span>Extraurbano {{v?.vehicle?.features | features:'consumo_extraurbano_por_100_km'}}/100km </span> <br>
+									    <span>Media {{v?.vehicle?.features | features:'consumo_medio_por_100_km'}}/100km </span> <br>
+									  </div>
+									</div>
+
+								</div>
+								<div class="col-md-6">
+									<div class="media mb-20">
+									  <img class="mr-3 ft" src="assets/iconos/weight.svg" alt="svg">
+									  <div class="media-body details">
+									    <h4 class="mt-0"><b>Peso</b></h4>
+									    <span>{{v?.vehicle?.features | features:'peso_en_orden_de_marcha'}} </span> <br>
+									  </div>
+									</div>
+
+									<div class="media mb-20">
+									  <img class="mr-3 ft" src="assets/iconos/fuel.svg" alt="svg">
+									  <div class="media-body details">
+									    <h4 class="mt-0"><b>Depósito</b></h4>
+									    <span>{{v?.vehicle?.features | features:'capacidad_deposito'}} </span> <br>
+									  </div>
+									</div>
+
+									<div class="media mb-20">
+									  <img class="mr-3 ft" src="assets/iconos/speed.svg" alt="svg">
+									  <div class="media-body details">
+									    <h4 class="mt-0"><b>Aceleración</b></h4>
+									    <span>{{v?.vehicle?.features | features:'aceleracion_de_0_100_kmh'}} de 0 a 100km/h </span> <br>
+									  </div>
+									</div>
+
+									<div class="media mb-20">
+									  <img class="mr-3 ft" src="assets/iconos/transmission-2.svg" alt="svg">
+									  <div class="media-body details">
+									    <h4 class="mt-0"><b>Tracción</b></h4>
+									    <span>{{v?.vehicle?.features | features:'ruedas_motrices'}} </span> <br>
+									  </div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="modal fade fullscreen-modal" id="ficha">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
+								<div class="modal-header">
+									<h3 style="margin: 0 !important; width: 100%"><b>Ficha del vehículo</b> <button (click)="imprimir()" class="btn btn-sm btn-info pull-right"><i class="fa fa-print"></i> Imprimir</button></h3>
+								</div>
+								<div class="modal-body">
+									<div class="row">
+										
+										<div class="col-sm-12" *ngFor="let s of v?.category?.sections">
+
+											<div *ngIf="(v?.vehicle?.features | features:'list_of_features':s.section).length > 0">
+												<h4 class="btn-collapse" data-toggle="collapse" [attr.data-target]="'#collapse-'+s.id">{{s.section.title}}</h4>
+
+												<ul class="collapse" [id]="'collapse-'+s.id">
+													<li style="font-size: 12px;" *ngFor="let f of (v?.vehicle?.features | features:'list_of_features':s.section)"><b>{{f.feature.title}}:</b> {{f.value+' '+(f.unit != 'NULL' ? f.unit : '')}}</li>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<h2>Destacados</h2>
+
+					<div class="row mb-20">
+						<div class="col-4" *ngFor="let ft of featured">
+							
+						  <div class="publishing-img mb-10" [ngStyle]="{'background-image':'url('+ft.gallery[0]?.file+')'}">
+						  	<div class="publishing-inner">
+						  		<div class="w100">
+							  		<div class="share">
+							  			<i class="fa fa-share" [routerLink]="['/detalles',ft.id]" (click)="selectCar(ft)"></i>
+							  		</div>
+							  		<div>
+								  		<i class="fa fa-eye"></i> {{ft.views || 0}} &nbsp;&nbsp;&nbsp;
+	      		  						<i class="fa fa-heart-o"></i> {{ft.favorites || 0}}
+							  		</div>
+
+							  		<button class="btn see-in-map"><i class="fa fa-map-marker"></i> Ver en el mapa</button>
+						  		</div>
+						  	</div>
+						  </div>
+
+						    <div class="media">
+							  <div class="category-dot mr-1">
+								<img src="assets/iconos/car.svg" alt="">
+							  </div>
+							  <div class="media-body featured">
+							    <h5 class="mt-0"><b>{{ft.title}}</b> <span>{{ft.price | thousands}}€</span></h5>
+							  </div>
+							</div>
+							<div class="bottom-part mb-20">
+								<i class="fa fa-clock-o"></i> {{ft.created_at | time}}
+							    <i class="fa fa-map-marker"></i> Málaga
+							</div>
+
+						</div>
+
+						<!-- <div class="col-4">
+							
+						  <div class="publishing-img mb-10" [ngStyle]="{'background-image':'url(assets/polo.jpg)'}">
+						  	<div class="publishing-inner">
+						  		<div class="w100">
+							  		<div class="share">
+							  			<i class="fa fa-share"></i>
+							  		</div>
+							  		<div>
+								  		<i class="fa fa-eye"></i> 10 &nbsp;&nbsp;&nbsp;
+								  		<i class="fa fa-heart-o"></i> 25
+							  		</div>
+
+							  		<button class="btn see-in-map"><i class="fa fa-map-marker"></i> Ver en el mapa</button>
+						  		</div>
+						  	</div>
+						  </div>
+
+						  <div class="media">
+							  <div class="category-dot mr-1">
+								<img src="assets/iconos/car.svg" alt="">
+							  </div>
+							  <div class="media-body featured">
+							    <h5 class="mt-0"><b>VOLKSWAGEN Polo</b> <span>12.400€</span></h5>
+							  </div>
+							</div>
+							<div class="bottom-part mb-20">
+								<i class="fa fa-clock-o"></i> 21.04.20
+							    <i class="fa fa-map-marker"></i> Málaga
+							</div>
+
+						</div>
+
+						<div class="col-4">
+							
+						  <div class="publishing-img mb-10" [ngStyle]="{'background-image':'url(assets/captiva.jpg)'}">
+						  	<div class="publishing-inner">
+						  		<div class="w100">
+							  		<div class="share">
+							  			<i class="fa fa-share"></i>
+							  		</div>
+							  		<div>
+								  		<i class="fa fa-eye"></i> 10 &nbsp;&nbsp;&nbsp;
+								  		<i class="fa fa-heart-o"></i> 25
+							  		</div>
+
+							  		<button class="btn see-in-map"><i class="fa fa-map-marker"></i> Ver en el mapa</button>
+						  		</div>
+						  	</div>
+						  </div>
+
+						  <div class="media">
+							  <div class="category-dot mr-1">
+								<img src="assets/iconos/car.svg" alt="">
+							  </div>
+							  <div class="media-body featured">
+							    <h5 class="mt-0"><b>CHEVROLET Captiva</b> <span>12.400€</span></h5>
+							  </div>
+							</div>
+							<div class="bottom-part mb-20">
+								<i class="fa fa-clock-o"></i> 21.04.20
+							    <i class="fa fa-map-marker"></i> Málaga
+							</div>
+
+						</div> -->
+					</div>
+
+					<img *ngIf="banner1" (click)="api.openLink(banner1.link)" [src]="banner1.file" style="width: 100%; cursor: pointer;" alt="">
+
+				</div>
+				<div class="col-md-3">
+					<div class="card bs-mh mb-20">
+						<div class="card-body">
+							<div class="row" style="margin-bottom: -20px;">
+						    	<div class="col-6">
+						    		<h3 class="mb-0"><b style="font-size: 120%;">{{v?.price | thousands}}€</b> <br> <small style="position: relative; top: -8px;">Al contado</small></h3>
+						    		<h3 class="mb-0" *ngIf="v?.price_professional" style="position: relative; top: -10px; color: #43A7E5;"><b style="font-size: 120%;">{{v?.price_professional | thousands}}€</b> <br> <small style="position: relative; top: -8px;">Profesional</small></h3>
+						    	</div>
+						    	<div class="col-6">
+						    		<h3 class="mb-0" *ngIf="v?.price_financed"><b style="font-size: 120%; color: crimson;">{{v?.price_financed | thousands}}€</b> <br> <small style="position: relative; top: -8px;">Financiado</small></h3>
+						    		<h3 class="mb-0" *ngIf="v?.guarantee" style="position: relative; top: 2px; line-height: 20px;"><b style="font-size: 10px;">GARANTIA: <br> {{v?.guarantee_time}} meses</b> <br>
+						    			<b style="font-size: 10px;" *ngIf="v?.iva">IVA DEDUCIBLE INCLUIDO</b></h3>
+						    	</div>
+						    </div>
+						</div>
+						<div class="card-body contact-box bs-mh" *ngIf="v">
+							<div class="text-center" *ngIf="v?.user.role == 3">
+								<div class="profile-circle" [ngStyle]="{'background-image':'url('+(v?.user?.company?.logo ? v?.user?.company?.logo : v.user.avatar)+')','height':'60px','width':'60px','position':'relative','float':'unset'}"></div>
+
+								<br>
+					    		<!-- <img src="assets/iconos/cn.svg" class="mr-2" style="width: 60px;" alt=""> -->
+					    		<b>{{v?.user?.company?.title}}</b>
+							</div>
+
+							<div class="lh">
+								<i class="fa fa-map-marker"></i> <a target="_blank" href="https://www.google.com/maps/@{{v?.user?.company?.lt}},{{v?.user?.company?.ln}},15z">{{v?.province || '--'}}</a> <br>
+								
+								<i class="fa fa-phone"></i> <a href="tel:{{v?.user.phone}}">{{v?.user.phone}}</a> <br>
+
+								<i class="fa fa-envelope"></i> <a href="mailto:{{v?.user.email}}?subject={{v?.title}}">{{v?.user.email}}</a> <br>
+
+								<i *ngIf="v?.user.web" class="fa fa-link"></i> <a href="#"> {{v?.user.web}}</a> <br>
+
+								<h3 class="stars" style="margin-bottom: 4px;">{{v?.stars}}
+									<i [ngClass]="'fa fa-star'+(v?.stars > 0 && v?.stars < 1 ? '-half-o' : (v?.stars >= 1 ? '' : '-o'))"></i>
+									<i [ngClass]="'fa fa-star'+(v?.stars > 1 && v?.stars < 2 ? '-half-o' : (v?.stars >= 2 ? '' : '-o'))"></i>
+									<i [ngClass]="'fa fa-star'+(v?.stars > 2 && v?.stars < 3 ? '-half-o' : (v?.stars >= 3 ? '' : '-o'))"></i>
+									<i [ngClass]="'fa fa-star'+(v?.stars > 3 && v?.stars < 4 ? '-half-o' : (v?.stars >= 4 ? '' : '-o'))"></i>
+									<i [ngClass]="'fa fa-star'+(v?.stars > 4 && v?.stars < 5 ? '-half-o' : (v?.stars >= 5 ? '' : '-o'))"></i>
+								</h3>
+
+								<span style="cursor: pointer; margin-bottom: 8px; display: block;" *ngIf="canQualify[0] && !canQualify[1]" data-toggle="modal" data-target="#calificar">Calificar Vendedor</span>
+
+								<div *ngIf="canQualify[1]">
+									<span style="cursor: pointer; margin-bottom: 8px; display: block;" data-toggle="modal" data-target="#ver-comentario">Ver calificación</span>
+
+									<div class="modal fade" id="ver-comentario">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h4 style="margin: 0">Tu calificación al vendedor <br> <b>{{v.user.name+' '+v.user.last_name}} <span *ngIf="v?.user?.company">( {{v?.user?.company?.title}} )</span></b></h4>
+
+													<i class="fa fa-times" id="close-modal4" style="cursor: pointer;" data-dismiss="modal"></i>
+												</div>
+												<div class="modal-body">
+													
+													<h3 class="stars2">
+														<label for="stars-1">
+															<i [ngClass]="'fa fa-star'+(myStars >= 1 ? '' : '-o')"></i>
+														</label>
+														<label for="stars-2">
+															<i [ngClass]="'fa fa-star'+(myStars >= 2 ? '' : '-o')"></i>
+														</label>
+														<label for="stars-3">
+															<i [ngClass]="'fa fa-star'+(myStars >= 3 ? '' : '-o')"></i>
+														</label>
+														<label for="stars-4">
+															<i [ngClass]="'fa fa-star'+(myStars >= 4 ? '' : '-o')"></i>
+														</label>
+														<label for="stars-5">
+															<i [ngClass]="'fa fa-star'+(myStars >= 5 ? '' : '-o')"></i>
+														</label>
+													</h3>
+
+													<p [innerHtml]="myComments">
+														
+													</p>
+
+												</div>
+											</div>
+										</div>		
+									</div>
+								</div>
+
+
+							</div>
+
+							<div *ngIf="user && user.id != v.user_id">							
+
+								<button class="btn btn-warning btn-block" data-toggle="modal" data-target="#contacto-directo" style="color: #fff !important">Contactar</button>
+
+								<app-contact [vehicle]="v"></app-contact>
+
+							</div>
+
+					    </div>
+					</div>
+
+					<div class="card bs-mh mb-20">
+						<div class="card-body">
+							<h3><b>Extras</b></h3>
+							<hr style="border-width: 1px; border-color: #e9e9e9; box-shadow: 0 0 10px 1px #91aeae; ">
+
+							<ul>
+								<li><a href="#">Solicitar informe DGT</a></li>
+								<li><a href="#">Solicitar informe CARFAX</a></li>
+							</ul>
+
+							<button
+							*ngIf="user && user.id != v.user_id"
+							class="btn btn-danger btn-block" data-toggle="modal" data-target="#denunciar" style="color: #fff !important">Denunciar anuncio</button>
+						</div>
+					</div>
+
+					<div class="mb-20">
+						<app-share [vehicle]="v"></app-share>
+					</div>
+
+					<img *ngIf="banner3" (click)="api.openLink(banner2.link)" [src]="banner3.file" style="width: 100%; cursor: pointer;" alt="">
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+</div>
+
+<app-footer></app-footer>

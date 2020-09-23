@@ -1,0 +1,196 @@
+<div *ngIf="!loading">
+
+  <div class="row" *ngFor="let v of data">
+    <div class="col-sm-3" *ngIf="perfil">
+      <div class="card bs-mh mb-20">
+        <div class="card-body card-detail">
+          <div *ngIf="v.featured == 0">
+          <span data-toggle="modal" [attr.data-target]="'#feature-'+v.id"><img src="assets/perfil/star.svg" alt="" class="svg-profile"> Destacar <br></span>
+          </div>
+
+          <div *ngIf="v.featured == 1">
+            <span><img src="assets/perfil/star.svg" alt="" class="svg-profile"> <span style="color: crimson;">Destacado</span> <br></span>
+          </div>
+
+          <span data-toggle="modal" [attr.data-target]="'#renovar'+v.id" *ngIf="!v.valid_until | isvalid"><img src="assets/perfil/refresh.svg" alt="" class="svg-profile"> Renovar <br></span>
+
+          <span *ngIf="(v.valid_until | isvalid) && v.activated_at" (click)="activo()"><img src="assets/perfil/tick.svg" alt="" class="svg-profile"> Activo <br></span>
+          <span *ngIf="(v.valid_until | isvalid) && !v.activated_at" (click)="inactivo()"><img src="assets/perfil/block.svg" alt="" class="svg-profile"> Inactivo <br></span>
+
+          <span><img src="assets/perfil/analytics.svg" alt="" class="svg-profile"> Estadísticas <br></span>
+          <span (click)="imprimir(v.id)"><img src="assets/perfil/print.svg" alt="" class="svg-profile"> Imprimir anuncio <br></span>
+          <span data-toggle="modal" [attr.data-target]="'#delete'+v.id"><img src="assets/perfil/trash.svg" alt="" class="svg-profile"> Borrar <br></span>
+          <span class="share-box"><img src="assets/perfil/share-2.svg" alt="" class="svg-profile"> Compartir <br>
+            <div class="share-panel">
+              <share-button button="facebook" [url]="api.baseUrl+'repuesto/'+v.id"></share-button>
+              <share-button button="twitter" [url]="api.baseUrl+'repuesto/'+v.id"></share-button>
+              <share-button button="whatsapp" [url]="api.baseUrl+'repuesto/'+v.id"></share-button>
+            </div>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" [id]="'delete'+v.id">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            ¿Borrar el anuncio seleccionado? - {{v.title}}
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-sm btn-success" (click)="deleteAdvert(v.id)">Borrar</button>
+            <button class="btn btn-sm btn-danger">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" [id]="'renovar'+v.id">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            ¿Renovar el anuncio seleccionado? - {{v.title}}
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-sm btn-success" (click)="renovar(v)">Renovar</button>
+            <button class="btn btn-sm btn-danger">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" [id]="'feature-'+v.id" *ngIf="v.featured == 0">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">Destacar el anuncio (test)</div>
+          <div class="modal-footer">
+            <button data-dismiss="modal" class="btn btn-sm btn-success" (click)="feature(v.id)">Si</button>
+            <button data-dismiss="modal" class="btn btn-sm btn-danger">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div [ngClass]="perfil ? 'col-sm-9' : 'col-sm-12'">
+
+      <div [ngClass]=" v.featured == 1 ? 'media publishing featured' : 'media publishing'">
+        <div class="publishing-img" [ngStyle]="{'background-image':'url('+v.gallery[0]?.file+')'}">
+      	<div class="category-dot">
+      		<img src="assets/iconos/motor.svg" alt="">
+      	</div>
+        	<div class="publishing-inner">
+        		<div class="w100">
+
+              <a [href]="v.features | features:'url_del_anuncio'" target="_blank" *ngIf="(v.features | features:'url_del_anuncio') != '...'" class="share">
+                <i class="fa fa-share"></i>
+              </a>
+
+      	  		<div *ngIf="(v.features | features:'url_del_anuncio') == '...'" class="share" [routerLink]="['/repuesto/'+v.id]">
+      	  			<i class="fa fa-share"></i>
+      	  		</div>
+
+      	  		<div>
+      		  		<i class="fa fa-eye"></i> {{v.views || 0}} &nbsp;&nbsp;&nbsp;
+                <i class="fa fa-heart-o"></i> {{v.favorites || 0}}
+      	  		</div>
+
+      	  		<!-- <button class="btn see-in-map"><i class="fa fa-map-marker"></i> Ver en el mapa</button> -->
+        		</div>
+        	</div>
+        </div>
+        <div class="media-body">
+          <h2 class="mt-0" style="margin-bottom: 8px; overflow: hidden; height: 32px; position: relative; overflow: unset; cursor: pointer;">
+            <span class="v-title">
+
+              <a *ngIf="(v.features | features:'url_del_anuncio') != '...'" target="blank" [title]="v.title" [href]="v.features | features:'url_del_anuncio'"
+              style="outline: none; color: #000; text-decoration: none !important;">{{v.title}} </a>
+              <span *ngIf="(v.features | features:'url_del_anuncio') == '...'" [title]="v.title" [routerLink]="['/repuesto/'+v.id]" style="outline: none;">{{v.title}} </span>
+
+
+              <small style="color: silver; font-size: 14px;">{{v.features | features:'estado_del_repuesto'}} </small>
+            </span>
+            
+            <div *ngIf="v.user.role == 3" class="profile-circle" [ngStyle]="{'background-image':'url('+(v?.user?.company?.logo ? v?.user?.company?.logo : v.user.avatar)+')','height':'30px','width':'30px','position':'absolute'}"></div>
+            <!-- <img *ngIf="v.user.role == 2" [src]="v.user.avatar" class="mr-2" style="width: 40px; position: absolute; top: -2px;" alt=""> -->
+            <!-- <b style="font-size: 14px; position: relative; margin-left: 45px;">Logo Empresa</b> -->
+
+            <i *ngIf="!perfil" (click)="favorite(v.id,$event)" [class]="(v.id | favorite:favorites) ? 'favorite fa fa-heart pull-right' : 'favorite fa fa-heart-o pull-right'"></i>
+
+          </h2>
+          <!-- <h2 class="mt-0" style="margin-bottom: 8px; overflow: hidden; height: 32px; position: relative; overflow: unset;">
+            <span class="v-title" [title]="v.title">{{v.title}} <small style="color: silver; font-size: 14px;">{{v.features | features:'estado_del_repuesto'}}</small></span>
+
+            <div *ngIf="v.user.role == 3" class="profile-circle" [ngStyle]="{'background-image':'url('+v.user.avatar+')','height':'30px','width':'30px','position':'absolute'}"></div>
+
+            <i *ngIf="!perfil" (click)="favorite(v.id,$event)" [class]="(v.id | favorite:favorites) ? 'favorite fa fa-heart pull-right' : 'favorite fa fa-heart-o pull-right'"></i>
+          </h2> -->
+           
+          <div class="row" style="margin-bottom: -20px; height: 116px; overflow: auto;">
+          	<div class="col-12">
+          		<small style="margin-top: 0; position: relative; display: block"><b>Referencia: {{v.features | features:'referencia'}}</b></small>
+              <small style="margin-bottom: 5px; position: relative; display: block"><b>Precio: {{v.price | thousands}}€</b></small>
+          		<p [innerHtml]="v.description"></p>
+          	</div>
+          </div>
+
+          <hr style="border-width: 1px; border-color: #e9e9e9; box-shadow: 0 0 10px 1px #91aeae; ">
+      	
+      	<i class="fa fa-map-marker"></i> {{v.province}}
+
+      	<!-- <button class="btn btn-sm btn-publishing btn-dark">Particular</button> -->
+        <button *ngIf="v.user.role == 3" class="btn btn-sm btn-publishing btn-success">Profesional</button>
+        <button *ngIf="v.user.role == 2" class="btn btn-sm btn-publishing btn-dark">Particular</button>
+      	<span *ngIf="!perfil"> 
+        <a *ngIf="(v.features | features:'url_del_anuncio') != '...'" target="blank" [href]="v.features | features:'url_del_anuncio'" class="btn btn-sm btn-publishing btn-success">Accesos a la tienda</a>
+        <button *ngIf="(v.features | features:'url_del_anuncio') == '...'" [routerLink]="['/repuesto/'+v.id]" class="btn btn-sm btn-publishing btn-outline-secondary">leer mas</button>
+        </span>
+
+        <button *ngIf="perfil" [routerLink]="['/editar/'+v.id+'/Repuestos']" class="btn btn-sm btn-publishing btn-info">EDITAR ANUNCIO</button>
+        <!-- <button class="btn btn-sm btn-publishing btn-success">Accesos a la tienda</button> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
+
+<!-- <div class="media publishing">
+  <div class="publishing-img" [ngStyle]="{'background-image':'url(assets/motor.jpg)'}">
+  <div class="category-dot">
+    <img src="assets/iconos/motor.svg" alt="">
+  </div>
+    <div class="publishing-inner">
+      <div class="w100">
+        <div class="share">
+          <i class="fa fa-share"></i>
+        </div>
+
+        <div>
+          <i class="fa fa-eye"></i> 10 234 &nbsp;&nbsp;&nbsp;
+          <i class="fa fa-heart-o"></i> 253
+        </div>
+
+        <button class="btn see-in-map"><i class="fa fa-map-marker"></i> Ver en el mapa</button>
+      </div>
+    </div>
+  </div>
+  <div class="media-body" [routerLink]="['/repuesto/1']">
+    <h2 class="mt-0" style="margin-bottom: 8px">Motor completo hyundai atos prime <i class="fa fa-heart-o pull-right"></i></h2>
+     
+    <div class="row" style="margin-bottom: -20px; height: 116px; overflow: auto;">
+      <div class="col-12">
+        <small style="margin-top: -5px; position: relative; display: block"><b>Referencia: XXXXXXXXXX</b></small>
+      </div>
+      <div class="col-12">
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto sit molestiae ducimus, mollitia adipisci saepe, sequi quibusdam vitae aliquid ad dolor veniam voluptatem repudiandae quam dignissimos inventore nesciunt facere atque!</p>
+      </div>
+    </div>
+
+    <hr style="border-width: 1px; border-color: #e9e9e9; box-shadow: 0 0 10px 1px #91aeae; ">
+  
+  <i class="fa fa-map-marker"></i> Málaga
+
+  <button class="btn btn-sm btn-publishing btn-success">Accesos a la tienda</button>
+  </div>
+</div> -->

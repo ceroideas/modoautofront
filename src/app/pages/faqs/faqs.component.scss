@@ -1,0 +1,11 @@
+h2 {
+	margin-top: 16px;
+	font-size: 28px;
+	// text-align: center;
+}
+
+.btn-link .fa-arrow-down {display: none;}
+.btn-link .fa-arrow-up {display: block;}
+
+.btn-link.collapsed .fa-arrow-down {display: block;}
+.btn-link.collapsed .fa-arrow-up {display: none;}

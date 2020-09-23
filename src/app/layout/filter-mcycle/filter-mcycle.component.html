@@ -1,0 +1,104 @@
+<div class="card" style="border-color: #a0a0a0;">
+	<div class="card-heading" style="padding: 14px 10px; border-bottom: 1px solid #a0a0a0; text-align: center;">
+		<button class="btn btn-secondary btn-sm" style="background-color:#e9e9e9;font-size:12px;float:left;color:#333; border-color: #a0a0a0">Guardar búsqueda</button>
+		<button class="btn btn-secondary btn-sm" style="background-color:#e9e9e9;font-size:12px;float:right;color:#333; border-color: #a0a0a0">Borrar filtro</button>
+
+		<div class="clearfix"></div>
+
+		<h1 style="margin: 15px 0 5px; font-size: 24px;">4</h1>
+		<h4 style="margin: 0">Motos encontradas</h4>
+	</div>
+	<div class="card-body card-filter">
+
+		<div class="form-group">
+			<label no-margin><small><b>MARCA Y MODELO</b></small></label> <br>
+			<select2 class="custom-select2" [data]="brands"
+			    [value]="value"
+			    displaySearchStatus="always"
+			    multiple="true"
+			    (update)="update($event)">
+			</select2>
+		<!-- </div>
+		<div class="form-group"> -->
+			<label no-margin><small><b>MODELO</b></small></label> <br>
+			<select2 class="custom-select2" [data]="models"
+			    [value]="value"
+			    displaySearchStatus="always"
+			    multiple="true"
+			    (update)="update($event)">
+			</select2>
+		</div>
+		<div class="form-group">
+			<label no-margin><small><b>PROVINCIAS</b></small></label> <br>
+			<select2 class="custom-select2" [data]="provinces"
+				[value]="value"
+				displaySearchStatus="always"
+				multiple="true"
+			    (update)="update($event)">
+			</select2>
+		</div>
+
+		<div class="form-group">
+			<label no-margin><small><b>PRECIO</b></small></label> <br>
+			<div class="input-group">
+				<input type="number" class="form-control form-control-filter" placeholder="Desde">
+				<input type="number" class="form-control form-control-filter" placeholder="Hasta">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label no-margin><small><b>TIPO DE MOTO</b></small></label> <br>
+			<select2 class="custom-select2" [data]="types"
+			    [value]="value"
+			    displaySearchStatus="always"
+			    multiple="true"
+			    (update)="update($event)">
+			</select2>
+		</div>
+
+		<div class="form-group">
+			<label no-margin><small><b>CILINDRADA</b></small></label> <br>
+			<div class="input-group">
+				<input type="number" class="form-control form-control-filter" placeholder="Desde">
+				<input type="number" class="form-control form-control-filter" placeholder="Hasta">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label no-margin><small><b>AÑO</b></small></label> <br>
+			<div class="input-group">
+				<input type="number" class="form-control form-control-filter" placeholder="Desde">
+				<input type="number" class="form-control form-control-filter" placeholder="Hasta">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label no-margin><small><b>KILOMETROS</b></small></label> <br>
+			<div class="input-group">
+				<input type="number" class="form-control form-control-filter" placeholder="Desde">
+				<input type="number" class="form-control form-control-filter" placeholder="Hasta">
+			</div>
+		</div>
+
+		<div class="form-group">
+			
+			<label no-margin><small><b>TIPO DE VENDEDOR</b></small></label> <br>
+			<div class="custom-control custom-checkbox">
+			  <input type="checkbox" class="custom-control-input" id="customCheck1">
+			  <label class="custom-control-label" for="customCheck1"><span style="position:relative;top:3px">Todos</span></label>
+			</div>
+
+			<div class="custom-control custom-checkbox">
+			  <input type="checkbox" class="custom-control-input" id="customCheck2">
+			  <label class="custom-control-label" for="customCheck2"><span style="position:relative;top:3px">Profesional</span></label>
+			</div>
+
+			<div class="custom-control custom-checkbox">
+			  <input type="checkbox" class="custom-control-input" id="customCheck3">
+			  <label class="custom-control-label" for="customCheck3"><span style="position:relative;top:3px">Particular</span></label>
+			</div>
+		</div>
+
+
+	</div>
+</div>
